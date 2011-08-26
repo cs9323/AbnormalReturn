@@ -1,4 +1,4 @@
-package composite.merge;
+package component.merge;
 
 import org.osoa.sca.annotations.Remotable;
 

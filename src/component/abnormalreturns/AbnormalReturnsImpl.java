@@ -1,4 +1,4 @@
-package composite.abnormalreturns;
+package component.abnormalreturns;
 
 public class AbnormalReturnsImpl implements AbnormalReturns {
 

@@ -3,9 +3,12 @@ package util.models;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TRTHImportModel implements Serializable {
+public class TRTHImportModel implements Serializable{
     
     private static final long serialVersionUID = 365321055071992507L;
+    
+    public static int END_OF_DAY = 1;
+    public static int TIME_AND_SALES = 2;
     
     private Integer messageType;
     private String RIC;

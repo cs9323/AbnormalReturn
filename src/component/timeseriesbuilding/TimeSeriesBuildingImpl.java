@@ -1,4 +1,4 @@
-package composite.timeseriesbuilding;
+package component.timeseriesbuilding;
 
 public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 

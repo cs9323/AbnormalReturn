@@ -2,4 +2,11 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	xmlns:c="http://trthimport" targetNamespace="http://trthimport" name="trthimport">
 
+  <component name="TRTHImportComponent">
+    <implementation.java class="component.trthimport.TRTHImportImpl"/>
+    <service name="TRTHImport">
+      <binding.ws uri="http://localhost:8081/TRTHImport"/>
+    </service>
+  </component>
+
 </composite>

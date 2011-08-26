@@ -1,4 +1,4 @@
-package composite.abnormalreturns;
+package component.abnormalreturns;
 
 import org.osoa.sca.annotations.Remotable;
 

@@ -1,4 +1,4 @@
-package composite.download;
+package component.download;
 
 import org.osoa.sca.annotations.Remotable;
 

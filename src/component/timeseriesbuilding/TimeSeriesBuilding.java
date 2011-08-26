@@ -1,4 +1,4 @@
-package composite.timeseriesbuilding;
+package component.timeseriesbuilding;
 
 import org.osoa.sca.annotations.Remotable;
 
