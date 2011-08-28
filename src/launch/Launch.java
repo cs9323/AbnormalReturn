@@ -3,13 +3,14 @@ package launch;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.apache.tuscany.sca.host.embedded.SCADomain;
+//import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import component.computingservice.ComputingService;
 
 public class Launch {
     public static void main(String[] args) {
 
+    	/*
         SCADomain scaDomain = SCADomain.newInstance("computingservice.composite");
         ComputingService service = scaDomain.getService(ComputingService.class,
                 "ComputingServiceComponent/ComputingService");
@@ -38,6 +39,6 @@ public class Launch {
         }
 
         scaDomain.close();
-
+*/
     }
 }
