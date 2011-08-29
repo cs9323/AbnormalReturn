@@ -6,6 +6,7 @@ import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Reference;
 
 import util.models.MergeModel;
+import util.models.MergeResponseModel;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 import component.merge.Merge;
@@ -60,7 +61,7 @@ public class ComputingServiceImpl implements ComputingService {
         return trth.ImportMarketData(request);
     }
     
-    private String invokeMerge(MergeModel request) throws Exception {
+    private MergeResponseModel invokeMerge(MergeModel request) throws Exception {
     	return merge.MergeData(request);
     }
 
