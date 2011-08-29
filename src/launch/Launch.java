@@ -10,6 +10,7 @@ import component.computingservice.ComputingService;
 public class Launch {
     public static void main(String[] args) {
 
+    	
         SCADomain scaDomain = SCADomain.newInstance("computingservice.composite");
         ComputingService service = scaDomain.getService(ComputingService.class,
                 "ComputingServiceComponent/ComputingService");
