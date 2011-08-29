@@ -21,14 +21,14 @@ public class ComputingServiceImpl implements ComputingService {
         
         
         TRTHImportModel request = 
-                constructRequest(messageType, RIC, startTime, endTime, 
+                constructTRTHImportRequest(messageType, RIC, startTime, endTime, 
                                  startDate, endDate, useGMT, useCorporateActions);
-        invokeComputingService(request);
+        invokeTRTHImport(request);
         return null;
     }
     
     private TRTHImportModel 
-        constructRequest(String messageType, String RIC, 
+        constructTRTHImportRequest(String messageType, String RIC, 
                          String startTime, String endTime,
                          String startDate, String endDate,
                          String useGMT, String useCorporateActions) 
@@ -47,7 +47,7 @@ public class ComputingServiceImpl implements ComputingService {
                                     Boolean.parseBoolean(useCorporateActions));
     }
     
-    private String invokeComputingService(TRTHImportModel request) throws Exception {
+    private String invokeTRTHImport(TRTHImportModel request) throws Exception {
         return trth.ImportMarketData(request);
     }
 
