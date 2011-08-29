@@ -18,6 +18,7 @@ import component.timeseriesbuilding.TimeSeriesBuilding;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.trthimport.TRTHImport;
 
+@SuppressWarnings({"unused"})
 public class ComputingServiceImpl implements ComputingService {
 
     @Reference
