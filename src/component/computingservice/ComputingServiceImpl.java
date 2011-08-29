@@ -9,10 +9,13 @@ import util.models.MergeModel;
 import util.models.MergeResponseModel;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
+import util.models.TimeSeriesModel;
+import util.models.TimeSeriesResponseModel;
 import component.merge.Merge;
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
 import component.timeseriesbuilding.TimeSeriesBuilding;
+import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.trthimport.TRTHImport;
 
 public class ComputingServiceImpl implements ComputingService {
@@ -58,6 +61,18 @@ public class ComputingServiceImpl implements ComputingService {
                                     useCorporateActions);
     }
     
+    private TimeSeriesModel constructTimeSeriesModel(
+    		component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader header, 
+    		String EventSetID, 
+    		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures, 
+    		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics, 
+    		TimeRange timeRange, 
+    		String intervalDuration, 
+    		String intervalUnit, 
+    		String useGMT) {
+		return new TimeSeriesModel(header, EventSetID, measures, rics, timeRange, intervalDuration, intervalUnit, useGMT);	
+    }
+    
     private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
 			ArrayOfString mEv1, ArrayOfString mEv2, String option, String preEv2){
     	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
@@ -66,9 +81,14 @@ public class ComputingServiceImpl implements ComputingService {
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws AxisFault, RemoteException {
         return trth.ImportMarketData(request);
     }
+   
+    private TimeSeriesResponseModel invokeTimeSeriesBuilding(TimeSeriesModel request) throws Exception{
+    	return timeSeriesBuilding.returnStatusMsg(request);
+    }
     
     private MergeResponseModel invokeMerge(MergeModel request) throws Exception {
     	return merge.MergeData(request);
     }
+    
 
 }
