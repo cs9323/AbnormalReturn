@@ -28,42 +28,55 @@ public class MergeModel {
 	public void setCredentials(CredentialsHeader credentials) {
 		Credentials = credentials;
 	}
+	
 	public CredentialsHeader getCredentials() {
 		return Credentials;
 	}
+	
 	public void setEventSet1Id(String eventSet1Id) {
 		EventSet1Id = eventSet1Id;
 	}
+	
 	public String getEventSet1Id() {
 		return EventSet1Id;
 	}
+	
 	public void setEventSet2Id(String eventSet2Id) {
 		EventSet2Id = eventSet2Id;
 	}
+	
 	public String getEventSet2Id() {
 		return EventSet2Id;
 	}
+	
 	public void setMeasuresEv1(ArrayOfString measuresEv1) {
 		MeasuresEv1 = measuresEv1;
 	}
+	
 	public ArrayOfString getMeasuresEv1() {
 		return MeasuresEv1;
 	}
+	
 	public void setMeasuresEv2(ArrayOfString measuresEv2) {
 		MeasuresEv2 = measuresEv2;
 	}
+	
 	public ArrayOfString getMeasuresEv2() {
 		return MeasuresEv2;
 	}
+	
 	public void setMergeOption(String mergeOption) {
 		MergeOption = mergeOption;
 	}
+	
 	public String getMergeOption() {
 		return MergeOption;
 	}
+	
 	public void setPrefixEv2(String prefixEv2) {
 		PrefixEv2 = prefixEv2;
 	}
+	
 	public String getPrefixEv2() {
 		return PrefixEv2;
 	}

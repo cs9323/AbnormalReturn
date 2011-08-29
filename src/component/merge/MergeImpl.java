@@ -3,10 +3,11 @@ package component.merge;
 import java.rmi.RemoteException;
 
 import util.models.MergeModel;
+import util.models.MergeResponseModel;
 
 public class MergeImpl implements Merge {
 	
-	public String MergeData(MergeModel request) throws Exception {
+	public MergeResponseModel MergeData(MergeModel request) throws Exception {
 		String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/MergeService";
 		MergeServiceStub stub = new MergeServiceStub(wsURL);
 		MergeServiceStub.Merge msg = new MergeServiceStub.Merge();
@@ -20,9 +21,10 @@ public class MergeImpl implements Merge {
 			e.printStackTrace();
 		}
 		
-		if(response.getStatus().equals("ok"))
-			return response.getMessage();
+		MergeResponseModel resModel = new MergeResponseModel();
+		resModel.setMessage(response.getMessage());
+		resModel.setStatus(response.getStatus());
 		
-		return null;
+		return resModel;
 	}
 }
