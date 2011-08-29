@@ -1,11 +1,13 @@
 package component.computingservice;
 
-import java.text.SimpleDateFormat;
+import java.rmi.RemoteException;
 
+import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Reference;
 
 import util.models.MergeModel;
 import util.models.TRTHImportModel;
+import util.models.TRTHImportResponseModel;
 import component.merge.Merge;
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
@@ -22,14 +24,14 @@ public class ComputingServiceImpl implements ComputingService {
                           String startTime, String endTime,
                           String startDate, String endDate,
                           String useGMT, String useCorporateActions) 
-                                  throws Exception {
+                                  throws AxisFault, RemoteException {
         
-        
-        TRTHImportModel request = 
+        TRTHImportModel trthImportRequest = 
                 constructTRTHImportRequest(messageType, RIC, startTime, endTime, 
                                  startDate, endDate, useGMT, useCorporateActions);
-        invokeTRTHImport(request);
-        return null;
+        
+        TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
+        return trthImportResponse.getEventSetID();
     }
     
     private TRTHImportModel 
@@ -37,19 +39,16 @@ public class ComputingServiceImpl implements ComputingService {
                          String startTime, String endTime,
                          String startDate, String endDate,
                          String useGMT, String useCorporateActions) 
-                                 throws Exception{
+                                 {
         
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm:ss:sss");
-        
-        return new TRTHImportModel(Integer.parseInt(messageType), 
+        return new TRTHImportModel(messageType, 
                                     RIC, 
-                                    timeFormatter.parse(startTime), 
-                                    timeFormatter.parse(endTime), 
-                                    dateFormatter.parse(startDate), 
-                                    dateFormatter.parse(endDate), 
-                                    Boolean.parseBoolean(useGMT), 
-                                    Boolean.parseBoolean(useCorporateActions));
+                                    startTime, 
+                                    endTime, 
+                                    startDate, 
+                                    endDate, 
+                                    useGMT, 
+                                    useCorporateActions);
     }
     
     private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
@@ -57,7 +56,7 @@ public class ComputingServiceImpl implements ComputingService {
     	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
     }
     
-    private String invokeTRTHImport(TRTHImportModel request) throws Exception {
+    private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws AxisFault, RemoteException {
         return trth.ImportMarketData(request);
     }
     

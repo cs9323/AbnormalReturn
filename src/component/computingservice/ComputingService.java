@@ -1,5 +1,8 @@
 package component.computingservice;
 
+import java.rmi.RemoteException;
+
+import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Remotable;
 
 @Remotable
@@ -8,5 +11,5 @@ public interface ComputingService {
                           String startTime, String endTime,
                           String startDate, String endDate,
                           String useGMT, String useCorporateActions) 
-                                  throws Exception ;
+                                  throws AxisFault, RemoteException ;
 }

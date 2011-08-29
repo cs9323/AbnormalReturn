@@ -2,7 +2,10 @@ package component.trthimport;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.rmi.RemoteException;
 import java.util.UUID;
+
+import org.apache.axis2.AxisFault;
 
 import component.trthimport.TRTHImportWrapperServiceStub.DateRange;
 import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapper;
@@ -10,20 +13,25 @@ import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapperRespon
 import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
 import util.models.TRTHImportModel;
+import util.models.TRTHImportResponseModel;
 
 public class TRTHImportImpl implements TRTHImport {
 
     private String TMP_DIR = System.getProperty("java.io.tmpdir");
     
     @Override
-    public String ImportMarketData(TRTHImportModel request) throws Exception{
+    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws AxisFault, RemoteException{
         return importMarketDataImpl(request);
     }
     
-    private String importMarketDataImpl(TRTHImportModel request) throws Exception {
+    private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws AxisFault, RemoteException {
         String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/TRTHImportWrapperService";
+        
+        //System.out.println("1");
         TRTHImportWrapperServiceStub stub = new TRTHImportWrapperServiceStub(wsURL);
         TRTHImportWrapper wrapper = new TRTHImportWrapper();
+        
+        //System.out.println("2");
         
         wrapper.setMessageType(request.getMessageType());
         wrapper.setRIC(request.getRIC());
@@ -32,9 +40,11 @@ public class TRTHImportImpl implements TRTHImport {
         wrapper.setUseGMT(request.getUseGMT());
         wrapper.setAddCorporateActions(request.getUseCorporateActions());
         
+        //System.out.println("3");
         TRTHImportWrapperResponse response = stub.tRTHImportWrapper(wrapper);
-        
-        return response.getMessage();
+        //System.out.println("4");
+        //System.out.println(response.getMessage());
+        return new TRTHImportResponseModel(response.getMessage(), response.getStatus());
     }
     
     private String generateDummyData(TRTHImportModel request) throws Exception{

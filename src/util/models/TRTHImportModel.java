@@ -21,23 +21,30 @@ public class TRTHImportModel implements Serializable{
     
     public TRTHImportModel() {}
     
-    public TRTHImportModel(Integer messageType, String RIC, 
+    public TRTHImportModel(String messageType, String RIC, 
                             String startTime, String endTime, 
                             String startDate, String endDate, 
                             String useGMT,
                             String useCorporateActions) 
     {
-        this.messageType = (messageType==0)?"EndOfDay":"Time & Scales";
+        this.messageType = (messageType.equals("0"))?"EndOfDay":"Time & Scales";
+        
         this.RIC = RIC;
+        
+        dateRange = new DateRange();
         
         this.dateRange.setStart(startDate);
         this.dateRange.setEnd(endDate);
+        
+        timeRange = new TimeRange();
         
         this.timeRange.setStart(startTime);
         this.timeRange.setEnd(endTime);
         
         this.useGMT = useGMT;
+        
         this.useCorporateActions = useCorporateActions;
+        
     }
 
 
@@ -45,8 +52,8 @@ public class TRTHImportModel implements Serializable{
     public String getMessageType() {
         return messageType;
     }
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
+    public void setMessageType(Integer messageType) {
+        this.messageType = messageType==0?"EndOfDay":"Time & Scales";
     }
     public String getRIC() {
         return RIC;
