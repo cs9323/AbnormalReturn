@@ -1,8 +1,11 @@
 package launch;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
 
+import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
 import component.computingservice.ComputingService;
@@ -15,28 +18,16 @@ public class Launch {
         ComputingService service = scaDomain.getService(ComputingService.class,
                 "ComputingServiceComponent/ComputingService");
 
-        String input = new String();
-
-        BufferedReader instreamReader = new BufferedReader(
-                new InputStreamReader(System.in));
-        
         System.out.println("Input: MessageType, RIC, StartTime, EndTime, " +
         		"StartDate, EndDate, " +
         		"useGMT, useCorporationAction");
         try {
-            while((input = instreamReader.readLine()) != null) {
-                String[] tokens = input.split(",");
-                service.invoke(tokens[0], tokens[1], 
-                               tokens[2], tokens[3], 
-                               tokens[4], tokens[5], 
-                               tokens[6], tokens[7]);
-                System.out.println("Input: MessageType, RIC, " +
-                		"StartTime, EndTime, StartDate, EndDate, " +
-                        "useGMT, useCorporationAction");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+            service.invoke("0","BHP.AX;RIO.AX","00:00:00:000","23:59:59:999","01-01-2011","01-03-2011","1","0");
+        } catch (AxisFault e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } 
 
         scaDomain.close();
 
