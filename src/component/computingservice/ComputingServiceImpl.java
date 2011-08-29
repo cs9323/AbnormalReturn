@@ -12,12 +12,18 @@ import util.models.TRTHImportResponseModel;
 import component.merge.Merge;
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
+import component.timeseriesbuilding.TimeSeriesBuilding;
 import component.trthimport.TRTHImport;
 
 public class ComputingServiceImpl implements ComputingService {
 
     @Reference
     public TRTHImport trth;
+    
+    @Reference
+    public TimeSeriesBuilding timeSeriesBuilding;
+    
+    @Reference
     public Merge merge;
     
     @Override

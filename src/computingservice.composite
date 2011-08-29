@@ -4,7 +4,13 @@
 
   <component name="ComputingServiceComponent">
     <implementation.java class="component.computingservice.ComputingServiceImpl" />
+    
     <reference name="trth" target="TRTHImportComponent" />
+    <reference name="timeSeriesBuilding" target="TimeSeriesBuildingComponent" />
+    <reference name="merge" target="MergeComponent" />
+    <!-- <reference name="" target="AbnormalReturnsComponent" />
+    <reference name="" target="DownloadComponent" /> -->
+    
     <service name="ComputingService" promote="ComputingServiceComponent/ComputingService">
       <interface.java interface="component.computingservice.ComputingService"/>
       <binding.ws uri="http://localhost:8081/ComputingService"/>
@@ -14,5 +20,15 @@
   <component name="TRTHImportComponent">
     <implementation.java class="component.trthimport.TRTHImportImpl"/>
   </component>
+  
+  <component name="TimeSeriesBuildingComponent">
+    <implementation.java class="component.timeseriesbuilding.TimeSeriesBuildingImpl"/>
+  </component>
+  
+  <component name="MergeComponent">
+    <implementation.java class="component.merge.MergeImpl"/>
+  </component>
+  
+  
 
 </composite>
