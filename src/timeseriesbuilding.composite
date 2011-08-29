@@ -2,4 +2,11 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	xmlns:c="http://timeseriesbuilding" targetNamespace="http://timeseriesbuilding" name="timeseriesbuilding">
 
+  <component name="TimeSeriesBuildingComponent">
+    <implementation.java class="component.timeseriesbuilding.TimeSeriesBuildingImpl"/>
+    <service name="TimeSeriesBuilding">
+      <binding.ws uri="http://localhost:8081/TimeSeriesBuilding"/>
+    </service>
+  </component>
+
 </composite>

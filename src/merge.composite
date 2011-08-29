@@ -7,6 +7,6 @@
 	    <service name="Merge">
 	      <binding.ws uri="http://localhost:8081/Merge"/>
 	    </service>
-	  </component>
+	</component>
 
 </composite>
