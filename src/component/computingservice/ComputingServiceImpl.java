@@ -4,13 +4,18 @@ import java.text.SimpleDateFormat;
 
 import org.osoa.sca.annotations.Reference;
 
+import util.models.MergeModel;
 import util.models.TRTHImportModel;
+import component.merge.Merge;
+import component.merge.MergeServiceStub.ArrayOfString;
+import component.merge.MergeServiceStub.CredentialsHeader;
 import component.trthimport.TRTHImport;
 
 public class ComputingServiceImpl implements ComputingService {
 
     @Reference
     public TRTHImport trth;
+    public Merge merge;
     
     @Override
     public String invoke(String messageType, String RIC, 
@@ -47,8 +52,17 @@ public class ComputingServiceImpl implements ComputingService {
                                     Boolean.parseBoolean(useCorporateActions));
     }
     
+    private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
+			ArrayOfString mEv1, ArrayOfString mEv2, String option, String preEv2){
+    	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
+    }
+    
     private String invokeTRTHImport(TRTHImportModel request) throws Exception {
         return trth.ImportMarketData(request);
+    }
+    
+    private String invokeMerge(MergeModel request) throws Exception {
+    	return merge.MergeData(request);
     }
 
 }

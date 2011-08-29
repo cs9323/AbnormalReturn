@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	xmlns:c="http://merge" targetNamespace="http://merge" name="merge">
+	
+	<component name="MergeComponent">
+	    <implementation.java class="component.merge.MergeImpl"/>
+	    <service name="Merge">
+	      <binding.ws uri="http://localhost:8081/Merge"/>
+	    </service>
+	  </component>
 
 </composite>
