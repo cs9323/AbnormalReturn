@@ -2,5 +2,13 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
 	xmlns:c="http://abnormalreturns" targetNamespace="http://abnormalreturns"
 	name="abnormalreturns">
+	
+	<component name="AbnormalReturnsComponent">
+	    <implementation.java class="component.abnormalreturns.AbnormalReturnsImpl"/>
+	    <service name="AbnormalReturns">
+	       <binding.ws uri="http://localhost:8081/AbnormalReturns"/>
+	    </service>
+	</component>
+	
 
 </composite>

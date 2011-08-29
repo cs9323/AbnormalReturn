@@ -5,12 +5,15 @@ import java.rmi.RemoteException;
 import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Reference;
 
+import util.models.AbnormalreturnModel;
+import util.models.AbnormalreturnResponseModel;
 import util.models.MergeModel;
 import util.models.MergeResponseModel;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
 import util.models.TimeSeriesResponseModel;
+import component.abnormalreturns.AbnormalReturns;
 import component.merge.Merge;
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
@@ -29,6 +32,9 @@ public class ComputingServiceImpl implements ComputingService {
     
     @Reference
     public Merge merge;
+    
+    @Reference
+    public AbnormalReturns abnormalReturns;
     
     @Override
     public String invoke(String messageType, String RIC, 
@@ -79,6 +85,10 @@ public class ComputingServiceImpl implements ComputingService {
     	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
     }
     
+    private AbnormalreturnModel constructAbnormalreturnModel(component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader ch,String eventID,String modelType,int dayWindow){
+    	return new AbnormalreturnModel(ch,eventID,modelType,dayWindow);
+    }
+    
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws AxisFault, RemoteException {
         return trth.ImportMarketData(request);
     }
@@ -91,5 +101,7 @@ public class ComputingServiceImpl implements ComputingService {
     	return merge.MergeData(request);
     }
     
-
+    private AbnormalreturnResponseModel invokeAbnormalReturn(AbnormalreturnModel request) throws Exception{
+    	return abnormalReturns.calculate(request);
+    }
 }
