@@ -1,48 +1,51 @@
 package util.models;
 
 import java.io.Serializable;
-import java.util.Date;
+
+import component.trthimport.TRTHImportWrapperServiceStub.DateRange;
+import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
 public class TRTHImportModel implements Serializable{
     
     private static final long serialVersionUID = 365321055071992507L;
     
-    public static int END_OF_DAY = 1;
-    public static int TIME_AND_SALES = 2;
+    public static String END_OF_DAY = "EndOfDay";
+    public static String TIME_AND_SALES = "Time & Scales";
     
-    private Integer messageType;
+    private String messageType;
     private String RIC;
-    private Date startTime;
-    private Date endTime;
-    private Date startDate;
-    private Date endDate;
-    private Boolean useGMT;
-    private Boolean useCorporateActions;
+    private DateRange dateRange;
+    private TimeRange timeRange;
+    private String useGMT;
+    private String useCorporateActions;
     
     public TRTHImportModel() {}
     
     public TRTHImportModel(Integer messageType, String RIC, 
-                            Date startTime, Date endTime, 
-                            Date startDate, Date endDate, 
-                            Boolean useGMT,
-                            Boolean useCorporateActions) 
+                            String startTime, String endTime, 
+                            String startDate, String endDate, 
+                            String useGMT,
+                            String useCorporateActions) 
     {
-        this.messageType = messageType;
+        this.messageType = (messageType==0)?"EndOfDay":"Time & Scales";
         this.RIC = RIC;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        
+        this.dateRange.setStart(startDate);
+        this.dateRange.setEnd(endDate);
+        
+        this.timeRange.setStart(startTime);
+        this.timeRange.setEnd(endTime);
+        
         this.useGMT = useGMT;
         this.useCorporateActions = useCorporateActions;
     }
 
 
 
-    public Integer getMessageType() {
+    public String getMessageType() {
         return messageType;
     }
-    public void setMessageType(Integer messageType) {
+    public void setMessageType(String messageType) {
         this.messageType = messageType;
     }
     public String getRIC() {
@@ -51,40 +54,33 @@ public class TRTHImportModel implements Serializable{
     public void setRIC(String rIC) {
         RIC = rIC;
     }
-    public Date getStartTime() {
-        return startTime;
+    
+    public DateRange getDateRange() {
+        return dateRange;
     }
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+
+    public void setDateRange(DateRange dateRange) {
+        this.dateRange = dateRange;
     }
-    public Date getEndTime() {
-        return endTime;
+
+    public TimeRange getTimeRange() {
+        return timeRange;
     }
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+
+    public void setTimeRange(TimeRange timeRange) {
+        this.timeRange = timeRange;
     }
-    public Date getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-    public Date getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-    public Boolean getUseGMT() {
+
+    public String getUseGMT() {
         return useGMT;
     }
-    public void setUseGMT(Boolean useGMT) {
+    public void setUseGMT(String useGMT) {
         this.useGMT = useGMT;
     }
-    public Boolean getUseCorporateActions() {
+    public String getUseCorporateActions() {
         return useCorporateActions;
     }
-    public void setUseCorporateActions(Boolean useCorporateActions) {
+    public void setUseCorporateActions(String useCorporateActions) {
         this.useCorporateActions = useCorporateActions;
     }
     

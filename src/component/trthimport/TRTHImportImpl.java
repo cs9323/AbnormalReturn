@@ -2,8 +2,12 @@ package component.trthimport;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.UUID;
+
+import component.trthimport.TRTHImportWrapperServiceStub.DateRange;
+import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapper;
+import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapperResponse;
+import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
 import util.models.TRTHImportModel;
 
@@ -13,26 +17,33 @@ public class TRTHImportImpl implements TRTHImport {
     
     @Override
     public String ImportMarketData(TRTHImportModel request) throws Exception{
-        return generateDummyData(request);
+        return importMarketDataImpl(request);
+    }
+    
+    private String importMarketDataImpl(TRTHImportModel request) throws Exception {
+        String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/TRTHImportWrapperService";
+        TRTHImportWrapperServiceStub stub = new TRTHImportWrapperServiceStub(wsURL);
+        TRTHImportWrapper wrapper = new TRTHImportWrapper();
+        
+        wrapper.setMessageType(request.getMessageType());
+        wrapper.setRIC(request.getRIC());
+        wrapper.setDate(request.getDateRange());
+        wrapper.setTime(request.getTimeRange());
+        wrapper.setUseGMT(request.getUseGMT());
+        wrapper.setAddCorporateActions(request.getUseCorporateActions());
+        
+        TRTHImportWrapperResponse response = stub.tRTHImportWrapper(wrapper);
+        
+        return response.getMessage();
     }
     
     private String generateDummyData(TRTHImportModel request) throws Exception{
         
-        Integer messageType = request.getMessageType();
+        String messageType = request.getMessageType();
         String RIC = request.getRIC();
-        Date startTime = request.getStartTime();
-        Date endTime = request.getEndTime();
-        Date startDate = request.getStartDate();
-        Date endDate = request.getEndDate();
+        DateRange dateRange = request.getDateRange();
+        TimeRange timeRange = request.getTimeRange();
 
-        if(startTime.after(endTime)) {
-            throw new Exception("Start time is later than end time");
-        }
-        
-        if(startDate.after(endDate)) {
-            throw new Exception("Start date is later than end date");
-        }
-        
         UUID uuid = UUID.randomUUID();
         String filename = TMP_DIR + "/rdth-" + uuid + ".csv";
         PrintWriter out = new PrintWriter(new File(TMP_DIR + "/rdth-" + uuid + ".csv"));
@@ -45,11 +56,8 @@ public class TRTHImportImpl implements TRTHImport {
         }
         
         out.println("RIC: " + RIC);
-        out.println("startTime: " + startTime.toString());
-        out.println("endTime: " + endTime.toString());
-        out.println("startDate: " + startDate.toString());
-        out.println("endDate: " + endDate.toString());
-        
+        out.println("DateRange: " + dateRange.toString());
+        out.println("TimeRange: " + timeRange.toString());
         out.close();
         
         return "ok:" + filename;
