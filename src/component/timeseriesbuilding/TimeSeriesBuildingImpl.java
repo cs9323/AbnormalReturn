@@ -48,8 +48,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		try {
 			response = stub.timeseries(Timeseries_request);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw e;
 		}
 		
 		String status = response.getMessage();
