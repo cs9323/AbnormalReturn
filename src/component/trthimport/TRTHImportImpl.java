@@ -21,7 +21,12 @@ public class TRTHImportImpl implements TRTHImport {
     
     @Override
     public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws AxisFault, RemoteException{
-        return importMarketDataImpl(request);
+        //return importMarketDataImpl(request);
+        try {
+            return generateDummyData(request);
+        } catch (Exception e) {
+        }
+        return null;
     }
     
     private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws AxisFault, RemoteException {
@@ -29,6 +34,7 @@ public class TRTHImportImpl implements TRTHImport {
         
         //System.out.println("1");
         TRTHImportWrapperServiceStub stub = new TRTHImportWrapperServiceStub(wsURL);
+        stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(30000);
         TRTHImportWrapper wrapper = new TRTHImportWrapper();
         
         //System.out.println("2");
@@ -44,10 +50,11 @@ public class TRTHImportImpl implements TRTHImport {
         TRTHImportWrapperResponse response = stub.tRTHImportWrapper(wrapper);
         //System.out.println("4");
         //System.out.println(response.getMessage());
-        return new TRTHImportResponseModel(response.getMessage(), response.getStatus());
+        // TODO: Here need to generate a model
+        return null;
     }
     
-    private String generateDummyData(TRTHImportModel request) throws Exception{
+    private TRTHImportResponseModel generateDummyData(TRTHImportModel request) throws Exception{
         
         String messageType = request.getMessageType();
         String RIC = request.getRIC();
@@ -70,7 +77,7 @@ public class TRTHImportImpl implements TRTHImport {
         out.println("TimeRange: " + timeRange.toString());
         out.close();
         
-        return "ok:" + filename;
+        return new TRTHImportResponseModel();
         
     }
     

@@ -2,22 +2,47 @@ package util.models;
 
 public class TRTHImportResponseModel {
     
-    private String eventSetID;
+    private String marketDataEventSetID;
+    private String indexEventSetID;
+    private String riskFreeAssetEventSetID;
     private String status;
     
     public TRTHImportResponseModel() {}
     
-    public TRTHImportResponseModel(String eventSetID, String status) {
-        this.eventSetID = eventSetID;
+    public TRTHImportResponseModel(String marketDataEventSetID,
+                                    String indexEventSetID,
+                                    String riskFreeAssetEventSetID,
+                                    String status) {
+        this.marketDataEventSetID = marketDataEventSetID;
+        this.indexEventSetID = indexEventSetID;
+        this.riskFreeAssetEventSetID = riskFreeAssetEventSetID;
         this.status = status;
     }
+    
+    
 
-    public String getEventSetID() {
-        return eventSetID;
+    public String getMarketDataEventSetID() {
+        return marketDataEventSetID;
     }
 
-    public void setEventSetID(String eventSetID) {
-        this.eventSetID = eventSetID;
+    public void setMarketDataEventSetID(String marketDataEventSetID) {
+        this.marketDataEventSetID = marketDataEventSetID;
+    }
+
+    public String getIndexEventSetID() {
+        return indexEventSetID;
+    }
+
+    public void setIndexEventSetID(String indexEventSetID) {
+        this.indexEventSetID = indexEventSetID;
+    }
+
+    public String getRiskFreeAssetEventSetID() {
+        return riskFreeAssetEventSetID;
+    }
+
+    public void setRiskFreeAssetEventSetID(String riskFreeAssetEventSetID) {
+        this.riskFreeAssetEventSetID = riskFreeAssetEventSetID;
     }
 
     public String getStatus() {

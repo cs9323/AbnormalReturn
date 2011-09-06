@@ -48,7 +48,7 @@ public class ComputingServiceImpl implements ComputingService {
                                  startDate, endDate, useGMT, useCorporateActions);
         
         TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
-        return trthImportResponse.getEventSetID();
+        return "";
     }
     
     private TRTHImportModel 
