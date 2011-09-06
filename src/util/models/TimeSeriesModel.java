@@ -12,7 +12,7 @@ public class TimeSeriesModel implements Serializable{
 	
 	
 	private CredentialsHeader header;
-	private String EventSetID = null;
+	private TRTHImportResponseModel request = null;
 	private ArrayOfString measures = null;
 	private ArrayOfString rics = null;
 	private TimeRange timeRange = null;
@@ -22,12 +22,12 @@ public class TimeSeriesModel implements Serializable{
 	
 	public TimeSeriesModel() {}
 	
-	public TimeSeriesModel(CredentialsHeader header, String EventSetID, ArrayOfString measures,
+	public TimeSeriesModel(CredentialsHeader header, TRTHImportResponseModel request, ArrayOfString measures,
 							ArrayOfString rics, TimeRange timeRange, String intervalDuration,
 							String intervalUnit, String useGMT){
 		
 		this.header = header;
-		this.EventSetID = EventSetID;
+		this.request = request;
 		this.measures = measures;
 		this.rics = rics;
 		this.timeRange = timeRange;
@@ -44,12 +44,12 @@ public class TimeSeriesModel implements Serializable{
         this.header = header;
     }
     
-    public String getEventSetID(){
-    	return EventSetID;
+    public TRTHImportResponseModel getRequest(){
+    	return request;
     }
     
-    public void setEventSetID(String EventSetID){
-    	this.EventSetID = EventSetID;
+    public void setReuest(TRTHImportResponseModel request){
+    	this.request = request;
     }
     
     public ArrayOfString getMeasures(){
