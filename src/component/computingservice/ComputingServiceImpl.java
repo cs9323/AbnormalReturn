@@ -70,14 +70,14 @@ public class ComputingServiceImpl implements ComputingService {
     
     private TimeSeriesModel constructTimeSeriesModel(
     		component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader header, 
-    		String EventSetID, 
+    		TRTHImportResponseModel request, 
     		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures, 
     		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics, 
     		TimeRange timeRange, 
     		String intervalDuration, 
     		String intervalUnit, 
     		String useGMT) {
-		return new TimeSeriesModel(header, EventSetID, measures, rics, timeRange, intervalDuration, intervalUnit, useGMT);	
+		return new TimeSeriesModel(header, request, measures, rics, timeRange, intervalDuration, intervalUnit, useGMT);	
     }
     
     private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
