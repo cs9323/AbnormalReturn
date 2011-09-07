@@ -1,6 +1,7 @@
 package component.timeseriesbuilding;
 
 import java.rmi.RemoteException;
+import java.util.UUID;
 
 import component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString;
 import component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader;
@@ -21,12 +22,15 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	@Override
 	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws Exception{
-        return generateStatusMsg(request);
-    }
+        
+		//return generateStatusMsg(request);
+		return dummy(request);
+	}
 	
 	
 	private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws Exception{
 		CredentialsHeader header = request.getCredentialsHeader();
+		
 		String marketData = request.getRequest().getMarketDataEventSetID();
 		String index = request.getRequest().getIndexEventSetID();
 		String riskFreeAsset = request.getRequest().getIndexEventSetID();
@@ -105,5 +109,28 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 			return "error";
 		}
 		return "";
+	}
+	
+	private TimeSeriesResponseModel dummy(TimeSeriesModel request){
+		System.out.println(request.getRequest().getMarketDataEventSetID());
+		System.out.println(request.getRequest().getIndexEventSetID());
+		System.out.println(request.getRequest().getRiskFreeAssetEventSetID());
+		
+		TimeSeriesResponseModel response = new TimeSeriesResponseModel();
+		
+		UUID uuid = UUID.randomUUID();
+		String MarketDataEventSetID = "rdth-" + uuid + ".csv";
+		response.setMarketDataEventSetID(MarketDataEventSetID);
+		
+		uuid = UUID.randomUUID();
+		String IndexEventSetID = "rdth-" + uuid + ".csv";
+		response.setIndexEventSetID(IndexEventSetID);
+		
+		uuid = UUID.randomUUID();
+		String RiskFreeAssetEventSetID = "rdth-" + uuid + ".csv";
+		response.setRiskFreeAssetEventSetID(RiskFreeAssetEventSetID);
+		
+		return response;
+		
 	}
 }
