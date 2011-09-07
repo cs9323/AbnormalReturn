@@ -61,9 +61,8 @@ public class TRTHImportImpl implements TRTHImport {
         DateRange dateRange = request.getDateRange();
         TimeRange timeRange = request.getTimeRange();
 
-        UUID uuid = UUID.randomUUID();
-        String filename = TMP_DIR + "/rdth-" + uuid + ".csv";
-        PrintWriter out = new PrintWriter(new File(TMP_DIR + "/rdth-" + uuid + ".csv"));
+        
+        /*PrintWriter out = new PrintWriter(new File(TMP_DIR + "/rdth-" + uuid + ".csv"));
         //out.println("#messageType,RIC,Date[G],Time[G],GMT Offset,Type,Price,Volumn,Bid Price,Bid Size,Ask Price,Ask Size");
         
         if(messageType == TRTHImportModel.END_OF_DAY) {
@@ -75,9 +74,31 @@ public class TRTHImportImpl implements TRTHImport {
         out.println("RIC: " + RIC);
         out.println("DateRange: " + dateRange.toString());
         out.println("TimeRange: " + timeRange.toString());
-        out.close();
+        out.close();*/
         
-        return new TRTHImportResponseModel();
+        System.out.println("Running TRTHImport Component");
+        
+        TRTHImportResponseModel response = new TRTHImportResponseModel();
+        
+        UUID uuid = UUID.randomUUID();
+        System.out.println("Generating market data");
+        String filename = "rdth-" + uuid + ".csv";
+        
+        response.setMarketDataEventSetID(filename);
+        
+        uuid = UUID.randomUUID();
+        System.out.println("Generating index");
+        filename = "rdth-" + uuid + ".csv";
+        
+        response.setIndexEventSetID(filename);
+        
+        uuid = UUID.randomUUID();
+        System.out.println("Generating risk free asset");
+        filename = "rdth-" + uuid + ".csv";
+        
+        response.setRiskFreeAssetEventSetID(filename);
+        
+        return response;
         
     }
     
