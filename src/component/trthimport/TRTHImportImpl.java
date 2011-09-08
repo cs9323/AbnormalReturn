@@ -83,18 +83,20 @@ public class TRTHImportImpl implements TRTHImport {
         UUID uuid = UUID.randomUUID();
         System.out.println("Generating market data");
         String filename = "rdth-" + uuid + ".csv";
-        
+        System.out.println("Market data: " + filename + " generated");
         response.setMarketDataEventSetID(filename);
         
         uuid = UUID.randomUUID();
         System.out.println("Generating index");
         filename = "rdth-" + uuid + ".csv";
+        System.out.println("Index: " + filename + " generated");
         
         response.setIndexEventSetID(filename);
         
         uuid = UUID.randomUUID();
         System.out.println("Generating risk free asset");
         filename = "rdth-" + uuid + ".csv";
+        System.out.println("Risk free asset: " + filename + " generated");
         
         response.setRiskFreeAssetEventSetID(filename);
         

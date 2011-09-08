@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Reference;
 
+import util.exceptions.ComputingServiceException;
 import util.models.AbnormalreturnModel;
 import util.models.AbnormalreturnResponseModel;
 import util.models.MergeModel;
@@ -14,6 +15,7 @@ import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
 import util.models.TimeSeriesResponseModel;
 import component.abnormalreturns.AbnormalReturns;
+import component.download.Download;
 import component.merge.Merge;
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
@@ -36,18 +38,39 @@ public class ComputingServiceImpl implements ComputingService {
     @Reference
     public AbnormalReturns abnormalReturns;
     
+    @Reference
+    public Download download;
+    
     @Override
     public String invoke(String messageType, String RIC, 
                           String startTime, String endTime,
                           String startDate, String endDate,
                           String useGMT, String useCorporateActions) 
-                                  throws AxisFault, RemoteException {
-        
-        TRTHImportModel trthImportRequest = 
+                                  throws ComputingServiceException{
+        try {
+            
+            // TODO Here insert code for TRTHImport
+            
+            TRTHImportModel trthImportRequest = 
                 constructTRTHImportRequest(messageType, RIC, startTime, endTime, 
                                  startDate, endDate, useGMT, useCorporateActions);
-        
-        TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
+            
+            System.out.println("Invoking TRTHImport component");
+            TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
+            System.out.println("Back from TRTHImport component");
+            
+            // TODO Here insert code for TimeSeriesBuilding
+            
+            // TODO Here insert code for Merge
+            
+            // TODO Here insert code for AbnormalReturn
+            
+            // TODO Here insert code for Download 
+            
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            throw new ComputingServiceException(e);
+        }
         return "";
     }
     
@@ -89,7 +112,7 @@ public class ComputingServiceImpl implements ComputingService {
     	return new AbnormalreturnModel(ch,eventID,modelType,dayWindow);
     }
     
-    private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws AxisFault, RemoteException {
+    private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws Exception {
         return trth.ImportMarketData(request);
     }
    

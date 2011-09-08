@@ -9,7 +9,7 @@
     <reference name="timeSeriesBuilding" target="TimeSeriesBuildingComponent" />
     <reference name="merge" target="MergeComponent" />
     <reference name="abnormalReturns" target="AbnormalReturnsComponent" />
-    <!--reference name="" target="DownloadComponent" /> -->
+    <reference name="download" target="DownloadComponent" />
     
     <service name="ComputingService" promote="ComputingServiceComponent/ComputingService">
       <interface.java interface="component.computingservice.ComputingService"/>
@@ -29,6 +29,12 @@
     <implementation.java class="component.merge.MergeImpl"/>
   </component>
   
+  <component name="AbnormalReturnsComponent">
+    <implementation.java class="component.abnormalreturns.AbnormalReturnsImpl"/>
+  </component>
   
+  <component name="DownloadComponent">
+    <implementation.java class="component.download.DownloadImpl"/>
+  </component>
 
 </composite>
