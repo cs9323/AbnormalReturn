@@ -9,6 +9,8 @@ import org.python.modules.newmodule;
 import util.exceptions.ComputingServiceException;
 import util.models.AbnormalreturnModel;
 import util.models.AbnormalreturnResponseModel;
+import util.models.DownloadModel;
+import util.models.DownloadResponseModel;
 import util.models.MergeModel;
 import util.models.MergeResponseModel;
 import util.models.TRTHImportModel;
@@ -76,6 +78,11 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Back from AbnormalReturn Component");
             
             // TODO Here insert code for Download 
+            DownloadModel downloadRequest = constructDownloadRequest(null);
+                       
+            System.out.println("Invoking Download component...");
+            DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
+            System.out.println("Back from Download component.");
             
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -137,6 +144,12 @@ public class ComputingServiceImpl implements ComputingService {
     	return new AbnormalreturnModel(ch,request.getMessage(),modelType,dayWindow);
     }
     
+    private DownloadModel constructDownloadRequest(DownloadModel request) {
+		String eventSetId = "eventSetId";
+		return new DownloadModel(eventSetId);
+	}
+
+    
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws Exception {
         return trth.ImportMarketData(request);
     }
@@ -152,4 +165,9 @@ public class ComputingServiceImpl implements ComputingService {
     private AbnormalreturnResponseModel invokeAbnormalReturn(AbnormalreturnModel request) throws Exception{
     	return abnormalReturns.calculate(request);
     }
+    
+    private DownloadResponseModel invokeDownload(DownloadModel request) throws Exception{
+    	return download.returnResult(request);
+    }
+
 }
