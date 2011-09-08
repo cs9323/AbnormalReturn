@@ -100,6 +100,8 @@ public class TRTHImportImpl implements TRTHImport {
         
         response.setRiskFreeAssetEventSetID(filename);
         
+        response.setTimeRange(timeRange);
+        
         return response;
         
     }

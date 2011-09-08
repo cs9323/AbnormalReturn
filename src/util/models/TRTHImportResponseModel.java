@@ -1,10 +1,13 @@
 package util.models;
 
+import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
+
 public class TRTHImportResponseModel {
     
     private String marketDataEventSetID;
     private String indexEventSetID;
     private String riskFreeAssetEventSetID;
+    private TimeRange timeRange;
     private String status;
     
     public TRTHImportResponseModel() {}
@@ -51,6 +54,14 @@ public class TRTHImportResponseModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public TimeRange getTimeRange() {
+        return timeRange;
+    }
+
+    public void setTimeRange(TimeRange timeRange) {
+        this.timeRange = timeRange;
     }
     
 }
