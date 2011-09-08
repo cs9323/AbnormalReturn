@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
 import org.osoa.sca.annotations.Reference;
+import org.python.modules.newmodule;
 
 import util.exceptions.ComputingServiceException;
 import util.models.AbnormalreturnModel;
@@ -63,12 +64,16 @@ public class ComputingServiceImpl implements ComputingService {
             
             TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
             System.out.println("Invoking TimeSeriesBuilding Component");
-            TimeSeriesResponseModel tsbModel = invokeTimeSeriesBuilding(timeSeriesModel);     
+            TimeSeriesResponseModel timeSeriesResponse = invokeTimeSeriesBuilding(timeSeriesModel);     
             System.out.println("Back from TimeSeriesBuilding Component");
             
             // TODO Here insert code for Merge
             
             // TODO Here insert code for AbnormalReturn
+            AbnormalreturnModel abnormalreturnModel=constructAbnormalreturnModel(null);
+            System.out.println("Invoking AbnormalReturn Component");
+            AbnormalreturnResponseModel abnormalreturnResponse=invokeAbnormalReturn(abnormalreturnModel);
+            System.out.println("Back from AbnormalReturn Component");
             
             // TODO Here insert code for Download 
             
@@ -123,8 +128,13 @@ public class ComputingServiceImpl implements ComputingService {
     	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
     }
     
-    private AbnormalreturnModel constructAbnormalreturnModel(component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader ch,String eventID,String modelType,int dayWindow){
-    	return new AbnormalreturnModel(ch,eventID,modelType,dayWindow);
+    private AbnormalreturnModel constructAbnormalreturnModel(MergeResponseModel request){
+    	component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader ch = new component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader();
+    	ch.setPassword("");
+    	ch.setUsername("");
+    	String modelType="marketmodel";
+    	int dayWindow=3;
+    	return new AbnormalreturnModel(ch,request.getMessage(),modelType,dayWindow);
     }
     
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request) throws Exception {
