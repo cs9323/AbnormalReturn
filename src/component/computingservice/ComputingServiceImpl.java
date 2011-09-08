@@ -60,8 +60,11 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Back from TRTHImport component");
             
             // TODO Here insert code for TimeSeriesBuilding
-            System.out.println("Invoking TimeSeriesBuilding Component");
+            
             TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
+            
+            System.out.println("Invoking TimeSeriesBuilding Component");
+            TimeSeriesResponseModel tsbModel = invokeTimeSeriesBuilding(timeSeriesModel);     
             System.out.println("Back from TimeSeriesBuilding Component");
             
             // TODO Here insert code for Merge
