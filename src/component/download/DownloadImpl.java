@@ -50,7 +50,7 @@ public class DownloadImpl implements Download {
 		
 		String filepath = System.getProperty("java.io.tmpdir");
 	
-		String downloadFile = filepath+"/../../webapps/ROOT/"+eventSetId;
+		String downloadFile = filepath+"/"+eventSetId;
 		try {
 			PrintWriter out = new PrintWriter(new File(downloadFile));
 			out.println("The eventSetId for this file is: "+eventSetId);
