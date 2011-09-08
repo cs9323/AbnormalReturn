@@ -12,25 +12,27 @@ public class TimeSeriesModel implements Serializable{
 	
 	
 	private CredentialsHeader header;
-	private TRTHImportResponseModel request = null;
-	private ArrayOfString measures = null;
-	private ArrayOfString rics = null;
-	private TimeRange timeRange = null;
-	private String intervalDuration = null;
-	private String intervalUnit = null;
-	private String useGMT = null;
+	private TRTHImportResponseModel request;
+	private ArrayOfString measures;
+	private ArrayOfString rics;
+	private TimeRange timeRange;
+	private String intervalDuration;
+	private String intervalUnit;
+	private String useGMT;
 	
 	public TimeSeriesModel() {}
 	
 	public TimeSeriesModel(CredentialsHeader header, TRTHImportResponseModel request, ArrayOfString measures,
-							ArrayOfString rics, TimeRange timeRange, String intervalDuration,
+							ArrayOfString rics, String intervalDuration,
 							String intervalUnit, String useGMT){
 		
 		this.header = header;
 		this.request = request;
 		this.measures = measures;
 		this.rics = rics;
-		this.timeRange = timeRange;
+		timeRange = new TimeRange();
+		timeRange.setStart(request.getTimeRange().getStart());
+		timeRange.setEnd(request.getTimeRange().getEnd());
 		this.intervalDuration = intervalDuration;
 		this.intervalUnit = intervalUnit;
 		this.useGMT = useGMT;

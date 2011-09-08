@@ -60,6 +60,9 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Back from TRTHImport component");
             
             // TODO Here insert code for TimeSeriesBuilding
+            System.out.println("Invoking TimeSeriesBuilding Component");
+            TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
+            System.out.println("Back from TimeSeriesBuilding Component");
             
             // TODO Here insert code for Merge
             
@@ -92,15 +95,25 @@ public class ComputingServiceImpl implements ComputingService {
     }
     
     private TimeSeriesModel constructTimeSeriesModel(
-    		component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader header, 
-    		TRTHImportResponseModel request, 
-    		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures, 
-    		component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics, 
-    		TimeRange timeRange, 
-    		String intervalDuration, 
-    		String intervalUnit, 
-    		String useGMT) {
-		return new TimeSeriesModel(header, request, measures, rics, timeRange, intervalDuration, intervalUnit, useGMT);	
+    		TRTHImportResponseModel request 
+    		) {
+    	
+    	component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader header = new component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader();
+        header.setPassword("");
+        header.setUsername("");
+        
+        component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
+        measures.addString("spot");
+        
+        component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
+        rics.addString("ALL");
+        
+        String intervalDuration = "0";
+        String intervalUnit = "spot";
+        
+        String useGMT = "1";
+        
+		return new TimeSeriesModel(header, request, measures, rics, intervalDuration, intervalUnit, useGMT);	
     }
     
     private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
