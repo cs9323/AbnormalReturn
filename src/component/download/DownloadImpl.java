@@ -48,8 +48,10 @@ public class DownloadImpl implements Download {
 		
 		System.out.println(eventSetId);
 		
+		String filepath = System.getProperty("java.io.tmpdir");
+		filepath = filepath.substring(0, filepath.lastIndexOf('/'));
 	
-		String downloadFile = System.getProperty("catalina.home")+"/webapps/ROOT/"+eventSetId+".csv";
+		String downloadFile = filepath+"/webapps/ROOT/"+eventSetId;
 		try {
 			PrintWriter out = new PrintWriter(new File(downloadFile));
 			out.println("The eventSetId for this file is: "+eventSetId);
