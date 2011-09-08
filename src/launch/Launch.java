@@ -8,6 +8,8 @@ import java.rmi.RemoteException;
 import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
 
+import util.exceptions.ComputingServiceException;
+
 import component.computingservice.ComputingService;
 
 public class Launch {
@@ -22,13 +24,19 @@ public class Launch {
         		"StartDate, EndDate, " +
         		"useGMT, useCorporationAction");
         try {
-            service.invoke("0","BHP.AX;RIO.AX","00:00:00:000","23:59:59:999","01-01-2011","01-03-2011","1","0");
-        } catch (AxisFault e) {
-            e.printStackTrace();
-        } catch (RemoteException e) {
-            e.printStackTrace();
+            service.invoke("0","BHP.AX","00:00:00.000","23:59:59.999","01-01-2011","01-01-2011","1","0");
+        } catch (ComputingServiceException e) {
+            
         } 
-
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        try {
+            while(br.readLine() != null);
+        } catch (IOException e) {
+            
+        }
+        
         scaDomain.close();
 
     }
