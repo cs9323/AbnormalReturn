@@ -10,6 +10,7 @@ import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapper;
 import component.trthimport.TRTHImportWrapperServiceStub.TRTHImportWrapperResponse;
 import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
+import util.exceptions.ComputingServiceException;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 
@@ -18,20 +19,23 @@ public class TRTHImportImpl implements TRTHImport {
     private String TMP_DIR = System.getProperty("java.io.tmpdir");
     
     @Override
-    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws Exception{
-        return generateDummyData(request);
-        
+    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws ComputingServiceException{
+        return importMarketDataImpl(request);
     }
     
-    private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws AxisFault, RemoteException {
+    private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws ComputingServiceException {
         String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/TRTHImportWrapperService";
         
-        //System.out.println("1");
-        TRTHImportWrapperServiceStub stub = new TRTHImportWrapperServiceStub(wsURL);
+        System.out.println("Running TRTHImport Component");
+        
+        TRTHImportWrapperServiceStub stub = null;
+        try {
+            stub = new TRTHImportWrapperServiceStub(wsURL);
+        } catch (AxisFault e) {
+            throw new ComputingServiceException(e);
+        }
         stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(30000);
         TRTHImportWrapper wrapper = new TRTHImportWrapper();
-        
-        //System.out.println("2");
         
         wrapper.setMessageType(request.getMessageType());
         wrapper.setRIC(request.getRIC());
@@ -40,12 +44,33 @@ public class TRTHImportImpl implements TRTHImport {
         wrapper.setUseGMT(request.getUseGMT());
         wrapper.setAddCorporateActions(request.getUseCorporateActions());
         
-        //System.out.println("3");
-        TRTHImportWrapperResponse response = stub.tRTHImportWrapper(wrapper);
-        //System.out.println("4");
-        //System.out.println(response.getMessage());
-        // TODO: Here need to generate a model
-        return null;
+        TRTHImportWrapperResponse response = null;
+        
+        try {
+            response = stub.tRTHImportWrapper(wrapper);
+        } catch (RemoteException e) {
+            throw new ComputingServiceException(e);
+        }
+        System.out.println("Get: " + response.getMessage());
+        TRTHImportResponseModel res = new TRTHImportResponseModel();
+        res.setMarketDataEventSetID(response.getMessage());
+        try {
+            response = stub.tRTHImportWrapper(wrapper);
+        } catch (RemoteException e) {
+            throw new ComputingServiceException(e);
+        }
+        System.out.println("Get: " + response.getMessage());
+        res.setIndexEventSetID(response.getMessage());
+        try {
+            response = stub.tRTHImportWrapper(wrapper);
+        } catch (RemoteException e) {
+            throw new ComputingServiceException(e);
+        }
+        System.out.println("Get: " + response.getMessage());
+        res.setRiskFreeAssetEventSetID(response.getMessage());
+        
+        res.setTimeRange(request.getTimeRange());
+        return res;
     }
     
     private TRTHImportResponseModel generateDummyData(TRTHImportModel request) throws Exception{

@@ -2,10 +2,11 @@ package component.abnormalreturns;
 
 import org.osoa.sca.annotations.Remotable;
 
+import util.exceptions.ComputingServiceException;
 import util.models.AbnormalreturnModel;
 import util.models.AbnormalreturnResponseModel;
 
 @Remotable
 public interface AbnormalReturns {
-	public AbnormalreturnResponseModel calculate(AbnormalreturnModel inputs) throws Exception;
+	public AbnormalreturnResponseModel calculate(AbnormalreturnModel inputs) throws ComputingServiceException;
 }

@@ -10,8 +10,7 @@ public class DownloadResponseModel implements Serializable{
 	File request;
 	public DownloadResponseModel() {}
 	
-	public void set_return(File request) throws Exception{
+	public void set_return(File request){
 		this.request = request;
-	
 	}
 }

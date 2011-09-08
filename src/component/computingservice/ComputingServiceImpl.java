@@ -47,7 +47,7 @@ public class ComputingServiceImpl implements ComputingService {
     @Override
     public String invoke(String messageType, String RIC, String startTime,
             String endTime, String startDate, String endDate, String useGMT,
-            String useCorporateActions) throws Exception {
+            String useCorporateActions) throws ComputingServiceException {
         try {
 
             // TODO Here insert code for TRTHImport
@@ -168,26 +168,26 @@ public class ComputingServiceImpl implements ComputingService {
     }
 
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request)
-            throws Exception {
+            throws ComputingServiceException {
         return trth.ImportMarketData(request);
     }
 
     private TimeSeriesResponseModel invokeTimeSeriesBuilding(
-            TimeSeriesModel request) throws Exception{
+            TimeSeriesModel request) throws ComputingServiceException{
         return timeSeriesBuilding.returnStatusMsg(request);
     }
 
-    private MergeResponseModel invokeMerge(MergeModel request) throws Exception {
+    private MergeResponseModel invokeMerge(MergeModel request) throws ComputingServiceException {
         return merge.MergeData(request);
     }
 
     private AbnormalreturnResponseModel invokeAbnormalReturn(
-            AbnormalreturnModel request) throws Exception {
+            AbnormalreturnModel request) throws ComputingServiceException {
         return abnormalReturns.calculate(request);
     }
 
     private DownloadResponseModel invokeDownload(DownloadModel request)
-            throws Exception {
+            throws ComputingServiceException {
         return download.returnResult(request);
     }
 

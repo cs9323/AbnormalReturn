@@ -3,6 +3,9 @@ package component.merge;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
+import org.apache.axis2.AxisFault;
+
+import util.exceptions.ComputingServiceException;
 import util.models.MergeModel;
 import util.models.MergeResponseModel;
 import component.merge.MergeServiceStub.ArrayOfString;
@@ -10,14 +13,20 @@ import component.merge.MergeServiceStub.CredentialsHeader;
 
 public class MergeImpl implements Merge {
 	
-	public MergeResponseModel MergeData(MergeModel request) throws Exception {
+	public MergeResponseModel MergeData(MergeModel request) throws ComputingServiceException {
 		//return doMergeData(request);
 		return dummyMergeData(request);
 	}
 	
-	private MergeResponseModel doMergeData(MergeModel request) throws Exception {
+	private MergeResponseModel doMergeData(MergeModel request) throws ComputingServiceException {
 		String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/MergeService";
-		MergeServiceStub stub = new MergeServiceStub(wsURL);
+		MergeServiceStub stub = null;
+		
+		try {
+            stub = new MergeServiceStub(wsURL);
+        } catch (AxisFault e1) {
+            throw new ComputingServiceException(e1);
+        }
 		
 		String marketDataEventSetID = request.getMarketDataEventSetID();
 		String indexEventSetID = request.getIndexEventSetID();
@@ -76,7 +85,7 @@ public class MergeImpl implements Merge {
 		return resModel;
 	}
 	
-	private MergeResponseModel dummyMergeData(MergeModel request) throws Exception {
+	private MergeResponseModel dummyMergeData(MergeModel request) throws ComputingServiceException {
 		System.out.println(request.getMarketDataEventSetID());
 		System.out.println(request.getIndexEventSetID());
 		System.out.println(request.getRiskFreeAssetEventSetID());

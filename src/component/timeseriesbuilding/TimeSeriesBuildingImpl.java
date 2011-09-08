@@ -3,12 +3,15 @@ package component.timeseriesbuilding;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
+import org.apache.axis2.AxisFault;
+
 import component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString;
 import component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.timeseriesbuilding.TimeseriesServiceStub.Timeseries;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeseriesResponse;
 
+import util.exceptions.ComputingServiceException;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
@@ -23,12 +26,12 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	Timeseries Timeseries_request;
 	
 	@Override
-	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws Exception{
+	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
 		return dummy(request);
 	}
 	
 	
-    private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws Exception{
+    private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
 		CredentialsHeader header = request.getCredentialsHeader();
 		
 		String marketData = request.getRequest().getMarketDataEventSetID();
@@ -42,7 +45,11 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		String intervalUnit = request.getIntervalUnit();
 		String useGMT = request.getUseGMT();
 		
-		stub = new TimeseriesServiceStub(wURL);
+		try {
+            stub = new TimeseriesServiceStub(wURL);
+        } catch (AxisFault e) {
+            throw new ComputingServiceException(e);
+        }
 		Timeseries_request = new Timeseries();
 		
 		Timeseries_request.setCredentials(header);
@@ -53,9 +60,13 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		Timeseries_request.setTimeIntervalUnit(intervalUnit);
 		Timeseries_request.setUseGMT(useGMT);
 
-		marketData = invoke(marketData);
-		index = invoke(index);
-		riskFreeAsset = invoke(riskFreeAsset);
+		try {
+            marketData = invoke(marketData);
+            index = invoke(index);
+            riskFreeAsset = invoke(riskFreeAsset);
+		} catch (RemoteException e) {
+		    throw new ComputingServiceException(e);
+        }
 		
 		TimeSeriesResponseModel response = new TimeSeriesResponseModel(marketData, index, riskFreeAsset);
 		return response;
