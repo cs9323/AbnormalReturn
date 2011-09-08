@@ -1,9 +1,12 @@
 package util.models;
 
+import java.io.Serializable;
+
 import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
-public class TRTHImportResponseModel {
+public class TRTHImportResponseModel implements Serializable{
     
+    private static final long serialVersionUID = 1L;
     private String marketDataEventSetID;
     private String indexEventSetID;
     private String riskFreeAssetEventSetID;

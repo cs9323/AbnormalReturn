@@ -1,7 +1,5 @@
 package component.trthimport;
 
-import java.io.File;
-import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
@@ -20,13 +18,9 @@ public class TRTHImportImpl implements TRTHImport {
     private String TMP_DIR = System.getProperty("java.io.tmpdir");
     
     @Override
-    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws AxisFault, RemoteException{
-        //return importMarketDataImpl(request);
-        try {
-            return generateDummyData(request);
-        } catch (Exception e) {
-        }
-        return null;
+    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws Exception{
+        return generateDummyData(request);
+        
     }
     
     private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws AxisFault, RemoteException {
@@ -60,21 +54,6 @@ public class TRTHImportImpl implements TRTHImport {
         String RIC = request.getRIC();
         DateRange dateRange = request.getDateRange();
         TimeRange timeRange = request.getTimeRange();
-
-        
-        /*PrintWriter out = new PrintWriter(new File(TMP_DIR + "/rdth-" + uuid + ".csv"));
-        //out.println("#messageType,RIC,Date[G],Time[G],GMT Offset,Type,Price,Volumn,Bid Price,Bid Size,Ask Price,Ask Size");
-        
-        if(messageType == TRTHImportModel.END_OF_DAY) {
-            out.print("messageType: End of Day");
-        } else if(messageType == TRTHImportModel.TIME_AND_SALES) {
-            out.print("messageType: Time and Sales");
-        }
-        
-        out.println("RIC: " + RIC);
-        out.println("DateRange: " + dateRange.toString());
-        out.println("TimeRange: " + timeRange.toString());
-        out.close();*/
         
         System.out.println("Running TRTHImport Component");
         

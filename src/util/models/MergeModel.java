@@ -1,11 +1,14 @@
 package util.models;
 
+import java.io.Serializable;
+
 import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
 
-public class MergeModel {
+public class MergeModel implements Serializable{
 	
-	private String MarketDataEventSetID;
+    private static final long serialVersionUID = 1L;
+    private String MarketDataEventSetID;
 	private String IndexEventSetID;
 	private String RiskFreeAssetEventSetID;
 	private CredentialsHeader Credentials;

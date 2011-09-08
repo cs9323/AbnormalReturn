@@ -1,17 +1,16 @@
 package util.models;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
 
 import component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString;
 import component.timeseriesbuilding.TimeseriesServiceStub.CredentialsHeader;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 
 
-public class TimeSeriesModel implements Serializable{
+public class TimeSeriesModel implements Serializable {
 	
-	
-	private CredentialsHeader header;
+    private static final long serialVersionUID = 1L;
+    private CredentialsHeader header;
 	private TRTHImportResponseModel request;
 	private ArrayOfString measures;
 	private ArrayOfString rics;
@@ -25,7 +24,7 @@ public class TimeSeriesModel implements Serializable{
 	public TimeSeriesModel(CredentialsHeader header, TRTHImportResponseModel request, ArrayOfString measures,
 							ArrayOfString rics, String intervalDuration,
 							String intervalUnit, String useGMT){
-		
+
 		this.header = header;
 		this.request = request;
 		this.measures = measures;

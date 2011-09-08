@@ -63,6 +63,7 @@ public class ComputingServiceImpl implements ComputingService {
             // TODO Here insert code for TimeSeriesBuilding
 
             TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
+
             System.out.println("Invoking TimeSeriesBuilding Component");
             TimeSeriesResponseModel timeSeriesResponse = invokeTimeSeriesBuilding(timeSeriesModel);
             System.out.println("Back from TimeSeriesBuilding Component");
@@ -172,7 +173,7 @@ public class ComputingServiceImpl implements ComputingService {
     }
 
     private TimeSeriesResponseModel invokeTimeSeriesBuilding(
-            TimeSeriesModel request) throws Exception {
+            TimeSeriesModel request) throws Exception{
         return timeSeriesBuilding.returnStatusMsg(request);
     }
 

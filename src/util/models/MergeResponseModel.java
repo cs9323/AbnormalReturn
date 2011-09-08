@@ -1,8 +1,11 @@
 package util.models;
 
-public class MergeResponseModel {
+import java.io.Serializable;
+
+public class MergeResponseModel implements Serializable {
 	
-	private String ResultEventSetID;
+    private static final long serialVersionUID = 1L;
+    private String ResultEventSetID;
 	private String Status;
 	
 	public MergeResponseModel() {}

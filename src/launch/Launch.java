@@ -1,14 +1,6 @@
 package launch;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.rmi.RemoteException;
-
-import org.apache.axis2.AxisFault;
 import org.apache.tuscany.sca.host.embedded.SCADomain;
-
-import util.exceptions.ComputingServiceException;
 
 import component.computingservice.ComputingService;
 

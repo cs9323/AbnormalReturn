@@ -5,10 +5,9 @@ import java.io.Serializable;
 import component.trthimport.TRTHImportWrapperServiceStub.DateRange;
 import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
 
-public class TRTHImportModel implements Serializable{
+public class TRTHImportModel implements Serializable {
     
-    private static final long serialVersionUID = 365321055071992507L;
-    
+    private static final long serialVersionUID = 1L;
     public static String END_OF_DAY = "EndOfDay";
     public static String TIME_AND_SALES = "Time & Scales";
     

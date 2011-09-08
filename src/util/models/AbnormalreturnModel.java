@@ -1,10 +1,13 @@
 package util.models;
 
+import java.io.Serializable;
+
 import component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader;
 
-public class AbnormalreturnModel {
+public class AbnormalreturnModel implements Serializable{
 	   
-       public AbnormalreturnModel(){}
+    private static final long serialVersionUID = 1L;
+    public AbnormalreturnModel(){}
        
        public AbnormalreturnModel(CredentialsHeader ch,String eventID,String modelType,int dayWindow){
     	   this.ch=ch;

@@ -2,9 +2,10 @@ package util.models;
 
 import java.io.Serializable;
 
-public class TimeSeriesResponseModel implements Serializable{
+public class TimeSeriesResponseModel implements Serializable {
 	
-	private String marketDataEventSetID;
+    private static final long serialVersionUID = 1L;
+    private String marketDataEventSetID;
 	private String indexEventSetID;
 	private String riskFreeAssetEventSetID;
 	

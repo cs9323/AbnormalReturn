@@ -10,9 +10,11 @@ import component.timeseriesbuilding.TimeseriesServiceStub.Timeseries;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeseriesResponse;
 
 import util.models.TRTHImportModel;
+import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
 import util.models.TimeSeriesResponseModel;
 
+@SuppressWarnings("unused")
 public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	String wURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/TimeseriesService?wsdl";
@@ -22,11 +24,11 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	@Override
 	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws Exception{
-	    System.out.println("try");
 		return dummy(request);
 	}
 	
-	private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws Exception{
+	
+    private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws Exception{
 		CredentialsHeader header = request.getCredentialsHeader();
 		
 		String marketData = request.getRequest().getMarketDataEventSetID();
@@ -85,7 +87,8 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		return "";
 	}
 	
-	private TimeSeriesResponseModel dummy(TimeSeriesModel request){
+	private TimeSeriesResponseModel dummy(TimeSeriesModel request) {
+	    
 		System.out.println(request.getRequest().getMarketDataEventSetID());
 		System.out.println(request.getRequest().getIndexEventSetID());
 		System.out.println(request.getRequest().getRiskFreeAssetEventSetID());
