@@ -1,7 +1,34 @@
 package util.models;
 
 public class MergeResponseModel {
-	private String Message;
+	
+	private String ResultEventSetID;
+	private String Status;
+	
+	public MergeResponseModel() {}
+	
+	public MergeResponseModel(String result){
+		this.ResultEventSetID = result;
+	}
+
+	public void setResultEventSetID(String resultEventSetID) {
+		ResultEventSetID = resultEventSetID;
+	}
+
+	public String getResultEventSetID() {
+		return ResultEventSetID;
+	}
+
+	public void setStatus(String status) {
+		Status = status;
+	}
+
+	public String getStatus() {
+		return Status;
+	}
+	
+	
+	/*private String Message;
 	private String Status;
 	
 	public MergeResponseModel(){}
@@ -25,6 +52,6 @@ public class MergeResponseModel {
 	
 	public String getStatus() {
 		return Status;
-	}
+	}*/
 	
 }

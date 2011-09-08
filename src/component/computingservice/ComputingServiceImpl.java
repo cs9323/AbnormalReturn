@@ -70,16 +70,19 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Back from TimeSeriesBuilding Component");
             
             // TODO Here insert code for Merge
+            MergeModel mergeModel = constructMergeModel(timeSeriesResponse);
+            System.out.println("Invoking Merge Component");
+            MergeResponseModel  mergeResponse = invokeMerge(mergeModel);
+            System.out.println("Back from Merge Component");
             
             // TODO Here insert code for AbnormalReturn
-            AbnormalreturnModel abnormalreturnModel=constructAbnormalreturnModel(null);
+            AbnormalreturnModel abnormalreturnModel=constructAbnormalreturnModel(mergeResponse);
             System.out.println("Invoking AbnormalReturn Component");
             AbnormalreturnResponseModel abnormalreturnResponse=invokeAbnormalReturn(abnormalreturnModel);
             System.out.println("Back from AbnormalReturn Component");
             
             // TODO Here insert code for Download 
-            DownloadModel downloadRequest = constructDownloadRequest(null);
-                       
+            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse);
             System.out.println("Invoking Download component...");
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
@@ -99,13 +102,13 @@ public class ComputingServiceImpl implements ComputingService {
                                  {
         
         return new TRTHImportModel(messageType, 
-                                    RIC, 
-                                    startTime, 
-                                    endTime, 
-                                    startDate, 
-                                    endDate, 
-                                    useGMT, 
-                                    useCorporateActions);
+                RIC, 
+                startTime, 
+                endTime, 
+                startDate, 
+                endDate, 
+                useGMT, 
+                useCorporateActions);
     }
     
     private TimeSeriesModel constructTimeSeriesModel(
@@ -117,7 +120,7 @@ public class ComputingServiceImpl implements ComputingService {
         header.setUsername("");
         
         component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
-        measures.addString("spot");
+        measures.addString("ClsPrice");
         
         component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
         rics.addString("ALL");
@@ -130,9 +133,30 @@ public class ComputingServiceImpl implements ComputingService {
 		return new TimeSeriesModel(header, request, measures, rics, intervalDuration, intervalUnit, useGMT);	
     }
     
-    private MergeModel constructMergeModel(CredentialsHeader cre, String eId1, String eId2, 
-			ArrayOfString mEv1, ArrayOfString mEv2, String option, String preEv2){
-    	return new MergeModel(cre, eId1, eId2, mEv1, mEv2, option, preEv2);
+    private MergeModel constructMergeModel(TimeSeriesResponseModel request){
+    	String MarketDataEventSetID = request.getMarketDataEventSetID();
+    	String IndexEventSetID = request.getIndexEventSetID();
+    	String RiskFreeAssetEventSetID = request.getRiskFreeAssetEventSetID();
+    	CredentialsHeader Credentials = new CredentialsHeader();
+    	Credentials.setPassword("");
+    	Credentials.setUsername("");
+    	ArrayOfString Merge1MeasuresEv1 = new ArrayOfString();
+    	Merge1MeasuresEv1.addString("ClsPrice");
+    	ArrayOfString Merge1MeasuresEv2 = new ArrayOfString();
+    	Merge1MeasuresEv2.addString("ClsPrice");
+    	ArrayOfString Merge2MeasuresEv1 = new ArrayOfString();
+    	Merge2MeasuresEv1.addString("ClsPrice");
+    	Merge2MeasuresEv1.addString("Index_ClsPrice");
+    	ArrayOfString Merge2MeasuresEv2 = new ArrayOfString();
+    	Merge2MeasuresEv2.addString("ClsPrice");
+    	String Merge1Option = "ByFile1ClosestBeforeOrEqualToEndInterval";
+    	String Merge2Option = "ByFile1ClosestBeforeOrEqualToEndInterval";
+    	String Merge1PrefixEv2 = "Index";
+    	String Merge2PrefixEv2 = "RiskFreeAssetReturn";
+    	
+    	return new MergeModel(MarketDataEventSetID, IndexEventSetID, RiskFreeAssetEventSetID, Credentials, 
+    						Merge1MeasuresEv1, Merge1MeasuresEv2, Merge2MeasuresEv1, Merge2MeasuresEv2, 
+    						Merge1Option, Merge2Option, Merge1PrefixEv2, Merge2PrefixEv2);
     }
     
     private AbnormalreturnModel constructAbnormalreturnModel(MergeResponseModel request){
@@ -141,11 +165,11 @@ public class ComputingServiceImpl implements ComputingService {
     	ch.setUsername("");
     	String modelType="marketmodel";
     	int dayWindow=3;
-    	return new AbnormalreturnModel(ch,request.getMessage(),modelType,dayWindow);
+    	return new AbnormalreturnModel(ch,request.getResultEventSetID(),modelType,dayWindow);
     }
     
-    private DownloadModel constructDownloadRequest(DownloadModel request) {
-		String eventSetId = "eventSetId";
+    private DownloadModel constructDownloadRequest(AbnormalreturnResponseModel request) {
+		String eventSetId = request.getEventSetID();
 		return new DownloadModel(eventSetId);
 	}
 

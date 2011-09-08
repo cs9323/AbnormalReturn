@@ -4,25 +4,62 @@ import component.merge.MergeServiceStub.ArrayOfString;
 import component.merge.MergeServiceStub.CredentialsHeader;
 
 public class MergeModel {
+	
+	private String MarketDataEventSetID;
+	private String IndexEventSetID;
+	private String RiskFreeAssetEventSetID;
 	private CredentialsHeader Credentials;
-	private String EventSet1Id;
-	private String EventSet2Id;
-	private ArrayOfString MeasuresEv1;
-	private ArrayOfString MeasuresEv2;
-	private String MergeOption;
-	private String PrefixEv2;
+	private ArrayOfString Merge1MeasuresEv1;
+	private ArrayOfString Merge1MeasuresEv2;
+	private ArrayOfString Merge2MeasuresEv1;
+	private ArrayOfString Merge2MeasuresEv2;
+	private String Merge1Option;
+	private String Merge2Option;
+	private String Merge1PrefixEv2;
+	private String Merge2PrefixEv2;
 	
-	public MergeModel(){}
+	public MergeModel() {}
 	
-	public MergeModel(CredentialsHeader cre, String eId1, String eId2, 
-			ArrayOfString mEv1, ArrayOfString mEv2, String option, String preEv2){
-		this.Credentials = cre;
-		this.EventSet1Id = eId1;
-		this.EventSet2Id = eId2;
-		this.MeasuresEv1 = mEv1;
-		this.MeasuresEv2 = mEv2;
-		this.MergeOption = option;
-		this.PrefixEv2 = preEv2;
+	public MergeModel(String marketDataEventSetID, String indexEventSetID, String riskFreeAssetEventSetID, 
+			CredentialsHeader credentials, ArrayOfString merge1MeasuresEv1, ArrayOfString merge1MeasuresEv2, 
+			ArrayOfString merge2MeasuresEv1, ArrayOfString merge2MeasuresEv2, String merge1Option, 
+			String merge2Option, String merge1PrefixEv2, String merge2PrefixEv2) {
+		this.setMarketDataEventSetID(marketDataEventSetID);
+		this.setIndexEventSetID(indexEventSetID);
+		this.setRiskFreeAssetEventSetID(riskFreeAssetEventSetID);
+		this.setCredentials(credentials);
+		this.setMerge1MeasuresEv1(merge1MeasuresEv1);
+		this.setMerge1MeasuresEv2(merge1MeasuresEv2);
+		this.setMerge2MeasuresEv1(merge2MeasuresEv1);
+		this.setMerge2MeasuresEv2(merge2MeasuresEv2);
+		this.setMerge1Option(merge1Option);
+		this.setMerge2Option(merge2Option);
+		this.setMerge1PrefixEv2(merge1PrefixEv2);
+		this.setMerge2PrefixEv2(merge2PrefixEv2);
+	}
+	
+	public void setMarketDataEventSetID(String marketDataEventSetID) {
+		MarketDataEventSetID = marketDataEventSetID;
+	}
+	
+	public String getMarketDataEventSetID() {
+		return MarketDataEventSetID;
+	}
+	
+	public void setIndexEventSetID(String indexEventSetID) {
+		IndexEventSetID = indexEventSetID;
+	}
+	
+	public String getIndexEventSetID() {
+		return IndexEventSetID;
+	}
+	
+	public void setRiskFreeAssetEventSetID(String riskFreeAssetEventSetID) {
+		RiskFreeAssetEventSetID = riskFreeAssetEventSetID;
+	}
+	
+	public String getRiskFreeAssetEventSetID() {
+		return RiskFreeAssetEventSetID;
 	}
 	
 	public void setCredentials(CredentialsHeader credentials) {
@@ -32,52 +69,68 @@ public class MergeModel {
 	public CredentialsHeader getCredentials() {
 		return Credentials;
 	}
-	
-	public void setEventSet1Id(String eventSet1Id) {
-		EventSet1Id = eventSet1Id;
+
+	public void setMerge1MeasuresEv1(ArrayOfString merge1MeasuresEv1) {
+		Merge1MeasuresEv1 = merge1MeasuresEv1;
 	}
-	
-	public String getEventSet1Id() {
-		return EventSet1Id;
+
+	public ArrayOfString getMerge1MeasuresEv1() {
+		return Merge1MeasuresEv1;
 	}
-	
-	public void setEventSet2Id(String eventSet2Id) {
-		EventSet2Id = eventSet2Id;
+
+	public void setMerge1MeasuresEv2(ArrayOfString merge1MeasuresEv2) {
+		Merge1MeasuresEv2 = merge1MeasuresEv2;
 	}
-	
-	public String getEventSet2Id() {
-		return EventSet2Id;
+
+	public ArrayOfString getMerge1MeasuresEv2() {
+		return Merge1MeasuresEv2;
 	}
-	
-	public void setMeasuresEv1(ArrayOfString measuresEv1) {
-		MeasuresEv1 = measuresEv1;
+
+	public void setMerge2MeasuresEv1(ArrayOfString merge2MeasuresEv1) {
+		Merge2MeasuresEv1 = merge2MeasuresEv1;
 	}
-	
-	public ArrayOfString getMeasuresEv1() {
-		return MeasuresEv1;
+
+	public ArrayOfString getMerge2MeasuresEv1() {
+		return Merge2MeasuresEv1;
 	}
-	
-	public void setMeasuresEv2(ArrayOfString measuresEv2) {
-		MeasuresEv2 = measuresEv2;
+
+	public void setMerge2MeasuresEv2(ArrayOfString merge2MeasuresEv2) {
+		Merge2MeasuresEv2 = merge2MeasuresEv2;
 	}
-	
-	public ArrayOfString getMeasuresEv2() {
-		return MeasuresEv2;
+
+	public ArrayOfString getMerge2MeasuresEv2() {
+		return Merge2MeasuresEv2;
 	}
-	
-	public void setMergeOption(String mergeOption) {
-		MergeOption = mergeOption;
+
+	public void setMerge1Option(String merge1Option) {
+		Merge1Option = merge1Option;
 	}
-	
-	public String getMergeOption() {
-		return MergeOption;
+
+	public String getMerge1Option() {
+		return Merge1Option;
 	}
-	
-	public void setPrefixEv2(String prefixEv2) {
-		PrefixEv2 = prefixEv2;
+
+	public void setMerge2Option(String merge2Option) {
+		Merge2Option = merge2Option;
 	}
-	
-	public String getPrefixEv2() {
-		return PrefixEv2;
+
+	public String getMerge2Option() {
+		return Merge2Option;
+	}
+
+	public void setMerge1PrefixEv2(String merge1PrefixEv2) {
+		Merge1PrefixEv2 = merge1PrefixEv2;
+	}
+
+	public String getMerge1PrefixEv2() {
+		return Merge1PrefixEv2;
+	}
+
+	public void setMerge2PrefixEv2(String merge2PrefixEv2) {
+		Merge2PrefixEv2 = merge2PrefixEv2;
+	}
+
+	public String getMerge2PrefixEv2() {
+		return Merge2PrefixEv2;
 	}
 }
