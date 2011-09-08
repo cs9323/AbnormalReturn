@@ -62,7 +62,6 @@ public class ComputingServiceImpl implements ComputingService {
             // TODO Here insert code for TimeSeriesBuilding
             
             TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
-            
             System.out.println("Invoking TimeSeriesBuilding Component");
             TimeSeriesResponseModel tsbModel = invokeTimeSeriesBuilding(timeSeriesModel);     
             System.out.println("Back from TimeSeriesBuilding Component");
