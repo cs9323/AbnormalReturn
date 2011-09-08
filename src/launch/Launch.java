@@ -25,17 +25,9 @@ public class Launch {
         		"useGMT, useCorporationAction");
         try {
             service.invoke("0","BHP.AX","00:00:00.000","23:59:59.999","01-01-2011","01-01-2011","1","0");
-        } catch (ComputingServiceException e) {
+        } catch (Exception e) {
             
         } 
-        
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
-        try {
-            while(br.readLine() != null);
-        } catch (IOException e) {
-            
-        }
         
         scaDomain.close();
 

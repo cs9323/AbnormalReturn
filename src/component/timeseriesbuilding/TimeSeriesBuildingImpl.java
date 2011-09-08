@@ -22,11 +22,9 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	@Override
 	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws Exception{
-        
-		//return generateStatusMsg(request);
+	    System.out.println("try");
 		return dummy(request);
 	}
-	
 	
 	private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws Exception{
 		CredentialsHeader header = request.getCredentialsHeader();
@@ -60,27 +58,6 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		TimeSeriesResponseModel response = new TimeSeriesResponseModel(marketData, index, riskFreeAsset);
 		return response;
 		
-//		try {
-//			response = stub.timeseries(Timeseries_request);
-//		} catch (RemoteException e) {
-//			throw e;
-//		}
-//		
-//		String statusmsg = response.getMessage();
-//		String status = response.getStatus();
-//		
-//		StringBuffer sb = new StringBuffer();
-//		String[] result = null;
-//		if (status.equals("ok")){
-//			sb.append(status).append(",").append(status);
-//			String temp = sb.toString();
-//			result = temp.split(",");
-//		}
-//		if (status.equals("er")){
-//			sb.append(status).append(",").append("error happens!");
-//			String temp = sb.toString();
-//			result = temp.split(",");
-//		}
 	}
 	
 	public String invoke(String EventSetID) throws RemoteException{
@@ -103,9 +80,6 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 			return statusmsg;
 		}
 		if (status.equals("er")){
-			//sb.append(status).append(",").append("error happens!");
-			//String temp = sb.toString();
-			//result = temp.split(",");
 			return "error";
 		}
 		return "";

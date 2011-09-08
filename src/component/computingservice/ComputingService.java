@@ -13,5 +13,5 @@ public interface ComputingService {
                           String startTime, String endTime,
                           String startDate, String endDate,
                           String useGMT, String useCorporateActions) 
-                                  throws ComputingServiceException;
+                                  throws Exception;
 }
