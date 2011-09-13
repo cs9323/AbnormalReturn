@@ -57,7 +57,7 @@ public class DownloadImpl implements Download {
 		File result = (File) resp.get_return();
 		DownloadResponseModel response_model = new DownloadResponseModel();
 		
-		response_model.set_return(result);
+		response_model.setRequest(result);
 		//resp.set_return(download_request);
 		return response_model;
 		
@@ -71,8 +71,10 @@ public class DownloadImpl implements Download {
 		String filepath = System.getProperty("java.io.tmpdir");
 	
 		String downloadFile = filepath+"/"+eventSetId;
+		File resFile = null;
 		try {
-			PrintWriter out = new PrintWriter(new File(downloadFile));
+			resFile = new File(downloadFile);
+			PrintWriter out = new PrintWriter(resFile);
 			out.println("The eventSetId for this file is: "+eventSetId);
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -80,7 +82,10 @@ public class DownloadImpl implements Download {
 			e.printStackTrace();
 		}
 		
-		return new DownloadResponseModel();
+		DownloadResponseModel resModel = new DownloadResponseModel();
+		resModel.setRequest(resFile);
+		
+		return resModel;
 	}
 
 }

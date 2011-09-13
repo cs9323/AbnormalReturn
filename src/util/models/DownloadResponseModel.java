@@ -7,10 +7,17 @@ public class DownloadResponseModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	File request;
-	public DownloadResponseModel() {}
+	private File request;
 	
-	public void set_return(File request){
+	public DownloadResponseModel() {}
+
+	public void setRequest(File request) {
 		this.request = request;
 	}
+
+	public File getRequest() {
+		return request;
+	}
+	
+
 }
