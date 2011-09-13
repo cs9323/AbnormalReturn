@@ -1,6 +1,5 @@
 package component.computingservice;
 
-import java.io.File;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
@@ -46,7 +45,7 @@ public class ComputingServiceImpl implements ComputingService {
     public Download download;
 
     @Override
-    public File invoke(String messageType, String RIC, String startTime,
+    public String invoke(String messageType, String RIC, String startTime,
             String endTime, String startDate, String endDate, String useGMT,
             String useCorporateActions) throws ComputingServiceException {
         try {
@@ -87,7 +86,7 @@ public class ComputingServiceImpl implements ComputingService {
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
             
-            return downloadResponse.getReturnFile();
+            return downloadResponse.getReturnFile().getAbsolutePath();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
