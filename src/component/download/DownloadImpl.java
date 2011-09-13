@@ -3,10 +3,12 @@ package component.download;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
+import org.apache.commons.io.FileUtils;
 
 import component.download.DowloadEventSetStub.DownloadBinaryFile;
 import component.download.DowloadEventSetStub.DownloadBinaryFileResponse;
@@ -68,14 +70,15 @@ public class DownloadImpl implements Download {
 		
 		System.out.println(eventSetId);
 		
-		String filepath = System.getProperty("java.io.tmpdir");
+		//String filepath = System.getProperty("java.io.tmpdir");
 	
-		String downloadFile = filepath+"/"+eventSetId;
+		//String downloadFile = filepath+"/"+eventSetId;
+		String downloadFile = "/home/shifengming/tomcat6.0/webapps/ROOT/outputCSV/" + eventSetId;
 		File resFile = null;
 		try {
 			resFile = new File(downloadFile);
 			PrintWriter out = new PrintWriter(resFile);
-			out.println("The eventSetId for this file is: "+eventSetId);
+			out.println("This is the dummy output data of AbnormalReturn Service.");
 			out.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

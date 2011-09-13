@@ -86,7 +86,9 @@ public class ComputingServiceImpl implements ComputingService {
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
             
-            return downloadResponse.getReturnFile().getAbsolutePath();
+            String url = downloadResponse.getReturnFile().getAbsolutePath();
+            url = url.substring(url.indexOf("ROOT") + 4, url.length());
+            return url;
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

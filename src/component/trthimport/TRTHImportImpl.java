@@ -20,7 +20,8 @@ public class TRTHImportImpl implements TRTHImport {
     
     @Override
     public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws ComputingServiceException{
-        return importMarketDataImpl(request);
+        return generateDummyData(request);
+    	//return importMarketDataImpl(request);
     }
     
     private TRTHImportResponseModel importMarketDataImpl(TRTHImportModel request) throws ComputingServiceException {
@@ -73,7 +74,7 @@ public class TRTHImportImpl implements TRTHImport {
         return res;
     }
     
-    private TRTHImportResponseModel generateDummyData(TRTHImportModel request) throws Exception{
+    private TRTHImportResponseModel generateDummyData(TRTHImportModel request) throws ComputingServiceException{
         
         String messageType = request.getMessageType();
         String RIC = request.getRIC();

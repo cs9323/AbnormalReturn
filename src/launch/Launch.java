@@ -19,14 +19,14 @@ public class Launch {
         		"StartDate, EndDate, " +
         		"useGMT, useCorporationAction");
         try {
-            service.invoke("0","BHP.AX","00:00:00.000","23:59:59.999","01-01-2011","03-01-2011","1","0");
+            service.invoke("0","BHP.AX","00:00:00.000","23:59:59.999","01-JAN-2004","01-DEC-2009","1","");
         } catch (Exception e) {
             e.printStackTrace();
         } 
         
-        /*BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         
-        while(reader.readLine() != null);*/
+        while(reader.readLine() != null);
         
         scaDomain.close();
 
