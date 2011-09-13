@@ -17,6 +17,8 @@ import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
 import util.models.TimeSeriesResponseModel;
+import util.models.VisualizationModel;
+import util.models.VisualizationResponseModel;
 import component.abnormalreturns.AbnormalReturns;
 import component.download.Download;
 import component.merge.Merge;
@@ -25,6 +27,7 @@ import component.merge.MergeServiceStub.CredentialsHeader;
 import component.timeseriesbuilding.TimeSeriesBuilding;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.trthimport.TRTHImport;
+import component.visualization.Visualization;
 
 @SuppressWarnings({ "unused" })
 public class ComputingServiceImpl implements ComputingService {
@@ -43,6 +46,9 @@ public class ComputingServiceImpl implements ComputingService {
 
     @Reference
     public Download download;
+    
+    @Reference
+    public Visualization visualization;
 
     @Override
     public String invoke(String messageType, String RIC, String startTime,
@@ -85,6 +91,11 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Invoking Download component...");
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
+            
+            VisualizationModel visualizationRequest=constructVisualizationModel(abnormalreturnResponse);
+            System.out.println("Invoking Visualization component...");
+            VisualizationResponseModel visualizationResponse=invokeVisualization(visualizationRequest);
+            System.out.println("Back from Visualization component.");
             
             String url = downloadResponse.getReturnFile().getAbsolutePath();
             url = url.substring(url.indexOf("ROOT") + 4, url.length());
@@ -164,11 +175,16 @@ public class ComputingServiceImpl implements ComputingService {
         return new AbnormalreturnModel(ch, request.getResultEventSetID(),
                 modelType, dayWindow);
     }
+    
 
     private DownloadModel constructDownloadRequest(
             AbnormalreturnResponseModel request) {
         String eventSetId = request.getEventSetID();
         return new DownloadModel(eventSetId);
+    }
+    
+    private VisualizationModel constructVisualizationModel(AbnormalreturnResponseModel arr){
+    	return new VisualizationModel("", "", "");
     }
 
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request)
@@ -193,6 +209,11 @@ public class ComputingServiceImpl implements ComputingService {
     private DownloadResponseModel invokeDownload(DownloadModel request)
             throws ComputingServiceException {
         return download.returnResult(request);
+    }
+    
+    private VisualizationResponseModel invokeVisualization(VisualizationModel request)
+            throws ComputingServiceException{
+    	return visualization.visualize(request);
     }
 
 }

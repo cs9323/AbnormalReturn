@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:t="http://tuscany.apache.org/xmlns/sca/1.0"
+	xmlns:c="http://visualization" targetNamespace="http://visualization"
+	name="abnormalreturns">
+	
+	<component name="VisualizationComponent">
+	    <implementation.java class="component.visualization.VisualizationImpl"/>
+	    <service name="Visualization">
+	       <binding.ws uri="http://localhost:8081/Visualization"/>
+	    </service>
+	</component>
+	
+
+</composite>

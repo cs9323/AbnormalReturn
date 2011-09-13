@@ -36,5 +36,9 @@
   <component name="DownloadComponent">
     <implementation.java class="component.download.DownloadImpl"/>
   </component>
+  
+  <component name="Visualization">
+    <implementation.java class="component.visualization.VisualizationImpl"/>
+  </component>
 
 </composite>
