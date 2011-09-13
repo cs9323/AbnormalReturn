@@ -24,6 +24,7 @@ public class MergeImpl implements Merge {
 		
 		try {
             stub = new MergeServiceStub(wsURL);
+            stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
         } catch (AxisFault e1) {
             throw new ComputingServiceException(e1);
         }
@@ -60,6 +61,7 @@ public class MergeImpl implements Merge {
 		}
 		
 		String ResultEventSetID1 = response1.getMessage();
+		System.out.println(response1.getStatus() + ": " + response1.getMessage());
 		
 		//second merge
 		MergeServiceStub.Merge msg2 = new MergeServiceStub.Merge();
@@ -81,6 +83,7 @@ public class MergeImpl implements Merge {
 		
 		MergeResponseModel resModel = new MergeResponseModel();
 		resModel.setResultEventSetID(response2.getMessage());
+		System.out.println(response2.getStatus() + ": " + response2.getMessage());
 		
 		return resModel;
 	}
@@ -93,7 +96,7 @@ public class MergeImpl implements Merge {
 		MergeResponseModel response = new MergeResponseModel();
 		
 		UUID uuid = UUID.randomUUID();
-		String resultEventSetID = "rdth-" + uuid + ".csv";
+		String resultEventSetID = "merge-" + uuid + ".csv";
 		response.setResultEventSetID(resultEventSetID);
 		
 		return response;

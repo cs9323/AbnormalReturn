@@ -15,7 +15,8 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
 
     public AbnormalreturnResponseModel calculate(AbnormalreturnModel inputs)
             throws ComputingServiceException {
-        return dummy(inputs);
+        //return doCalculate(inputs);
+    	return dummy(inputs);
     }
 
     private AbnormalreturnResponseModel dummy(AbnormalreturnModel inputs)
@@ -25,14 +26,17 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
                 + " received...\n");
         UUID uuid = UUID.randomUUID();
         AbnormalreturnResponseModel arr = new AbnormalreturnResponseModel();
-        arr.setEventSetID("rdth-" + uuid + ".csv");
+        arr.setEventSetID("abn-" + uuid + ".csv");
         arr.setStatus("Ok");
         return arr;
     }
 
     private AbnormalreturnResponseModel doCalculate(AbnormalreturnModel inputs)
             throws ComputingServiceException {
-
+    	
+    	System.out.println("Input EventSetID:" + inputs.getEventID()
+                + " received...");
+    	
         AbnormalreturnServiceStub arsStub;
 
         try {
@@ -64,6 +68,8 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
         AbnormalreturnResponseModel arr = new AbnormalreturnResponseModel();
         arr.setEventSetID(response.getMessage());
         arr.setStatus(response.getStatus());
+        System.out.println(arr.getStatus());
+        System.out.println(arr.getEventSetID());
         return arr;
     }
 }

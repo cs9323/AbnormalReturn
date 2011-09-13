@@ -27,6 +27,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	@Override
 	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
+		//return generateStatusMsg(request);
 		return dummy(request);
 	}
 	
@@ -89,6 +90,9 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		
 		StringBuffer sb = new StringBuffer();
 		String[] result = null;
+		
+		System.out.println(response.getStatus() + ": " + response.getMessage());
+		
 		if (status.equals("ok")){
 			return statusmsg;
 		}
@@ -107,15 +111,15 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		TimeSeriesResponseModel response = new TimeSeriesResponseModel();
 		
 		UUID uuid = UUID.randomUUID();
-		String MarketDataEventSetID = "rdth-" + uuid + ".csv";
+		String MarketDataEventSetID = "tsb-" + uuid + ".csv";
 		response.setMarketDataEventSetID(MarketDataEventSetID);
 		
 		uuid = UUID.randomUUID();
-		String IndexEventSetID = "rdth-" + uuid + ".csv";
+		String IndexEventSetID = "tsb-" + uuid + ".csv";
 		response.setIndexEventSetID(IndexEventSetID);
 		
 		uuid = UUID.randomUUID();
-		String RiskFreeAssetEventSetID = "rdth-" + uuid + ".csv";
+		String RiskFreeAssetEventSetID = "tsb-" + uuid + ".csv";
 		response.setRiskFreeAssetEventSetID(RiskFreeAssetEventSetID);
 		
 		return response;
