@@ -57,7 +57,7 @@ public class DownloadImpl implements Download {
 		File result = (File) resp.get_return();
 		DownloadResponseModel response_model = new DownloadResponseModel();
 		
-		response_model.setRequest(result);
+		response_model.setReturnFile(result);
 		//resp.set_return(download_request);
 		return response_model;
 		
@@ -83,7 +83,7 @@ public class DownloadImpl implements Download {
 		}
 		
 		DownloadResponseModel resModel = new DownloadResponseModel();
-		resModel.setRequest(resFile);
+		resModel.setReturnFile(resFile);
 		
 		return resModel;
 	}

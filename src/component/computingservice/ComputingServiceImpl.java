@@ -1,5 +1,6 @@
 package component.computingservice;
 
+import java.io.File;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
@@ -45,7 +46,7 @@ public class ComputingServiceImpl implements ComputingService {
     public Download download;
 
     @Override
-    public String invoke(String messageType, String RIC, String startTime,
+    public File invoke(String messageType, String RIC, String startTime,
             String endTime, String startDate, String endDate, String useGMT,
             String useCorporateActions) throws ComputingServiceException {
         try {
@@ -85,12 +86,14 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Invoking Download component...");
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
+            
+            return downloadResponse.getReturnFile();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new ComputingServiceException(e);
         }
-        return "";
+        //return "";
     }
 
     private TRTHImportModel constructTRTHImportRequest(String messageType,
@@ -117,7 +120,7 @@ public class ComputingServiceImpl implements ComputingService {
         String intervalDuration = "0";
         String intervalUnit = "spot";
 
-        String useGMT = "1";
+        String useGMT = "true";
 
         return new TimeSeriesModel(header, request, measures, rics,
                 intervalDuration, intervalUnit, useGMT);
@@ -156,7 +159,7 @@ public class ComputingServiceImpl implements ComputingService {
         ch.setPassword("");
         ch.setUsername("");
         String modelType = "marketmodel";
-        int dayWindow = 3;
+        int dayWindow = 2;
         return new AbnormalreturnModel(ch, request.getResultEventSetID(),
                 modelType, dayWindow);
     }
