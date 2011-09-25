@@ -8,5 +8,5 @@ import util.models.VisualizationResponseModel;
 
 @Remotable
 public interface Visualization {
-	public VisualizationResponseModel visualize(VisualizationModel inputs) throws ComputingServiceException;
+    public VisualizationResponseModel VisualizeData(VisualizationModel request) throws ComputingServiceException;
 }

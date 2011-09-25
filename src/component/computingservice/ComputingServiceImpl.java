@@ -28,6 +28,7 @@ import component.timeseriesbuilding.TimeSeriesBuilding;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.trthimport.TRTHImport;
 import component.visualization.Visualization;
+import component.visualization.VisualizationServiceStub;
 
 @SuppressWarnings({ "unused" })
 public class ComputingServiceImpl implements ComputingService {
@@ -80,6 +81,17 @@ public class ComputingServiceImpl implements ComputingService {
             MergeResponseModel mergeResponse = invokeMerge(mergeModel);
             System.out.println("Back from Merge Component");
 
+            // TODO Here insert code for Download
+            DownloadModel downloadRequest1 = constructDownloadRequest(mergeResponse.getResultEventSetID());
+            System.out.println("Invoking Download component...");
+            DownloadResponseModel downloadResponse1 = invokeDownload(downloadRequest1);
+            System.out.println("Back from Download component.");
+            
+            VisualizationModel visualizationRequest = constructVisualizationModel(mergeResponse.getResultEventSetID());
+            System.out.println("Invoking Visualization component...");
+            VisualizationResponseModel visualizationResponse = invokeVisualization(visualizationRequest);
+            System.out.println("Back from Visualization component.");
+            
             // TODO Here insert code for AbnormalReturn
             AbnormalreturnModel abnormalreturnModel = constructAbnormalreturnModel(mergeResponse);
             System.out.println("Invoking AbnormalReturn Component");
@@ -87,15 +99,10 @@ public class ComputingServiceImpl implements ComputingService {
             System.out.println("Back from AbnormalReturn Component");
 
             // TODO Here insert code for Download
-            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse);
+            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse.getEventSetID());
             System.out.println("Invoking Download component...");
             DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
             System.out.println("Back from Download component.");
-            
-            VisualizationModel visualizationRequest=constructVisualizationModel(abnormalreturnResponse);
-            System.out.println("Invoking Visualization component...");
-            VisualizationResponseModel visualizationResponse=invokeVisualization(visualizationRequest);
-            System.out.println("Back from Visualization component.");
             
             String url = downloadResponse.getReturnFile().getAbsolutePath();
             url = url.substring(url.indexOf("ROOT") + 4, url.length());
@@ -105,7 +112,6 @@ public class ComputingServiceImpl implements ComputingService {
             // TODO Auto-generated catch block
             throw new ComputingServiceException(e);
         }
-        //return "";
     }
 
     private TRTHImportModel constructTRTHImportRequest(String messageType,
@@ -178,13 +184,25 @@ public class ComputingServiceImpl implements ComputingService {
     
 
     private DownloadModel constructDownloadRequest(
-            AbnormalreturnResponseModel request) {
-        String eventSetId = request.getEventSetID();
+            String eventSetId) {
+        //String eventSetId = request.getEventSetID();
         return new DownloadModel(eventSetId);
     }
     
-    private VisualizationModel constructVisualizationModel(AbnormalreturnResponseModel arr){
-    	return new VisualizationModel("", "", "");
+    private VisualizationModel constructVisualizationModel(String eventSetId){
+    	VisualizationModel request = new VisualizationModel();
+    	String uri = "http://soc-server2.cse.unsw.edu.au:14080/";
+    	VisualizationServiceStub.ArrayOfString columns = new VisualizationServiceStub.ArrayOfString();
+    	columns.addString("ClsPrice");
+    	columns.addString("news_abnormal");
+    	VisualizationServiceStub.CredentialsHeader header = new VisualizationServiceStub.CredentialsHeader();
+    	header.setPassword("");
+    	header.setUsername("");
+    	request.setEventSetId(eventSetId);
+    	request.setURI(uri);
+    	request.setColumns(columns);
+    	request.setCredentials(header);
+    	return request;
     }
 
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request)
@@ -213,7 +231,7 @@ public class ComputingServiceImpl implements ComputingService {
     
     private VisualizationResponseModel invokeVisualization(VisualizationModel request)
             throws ComputingServiceException{
-    	return visualization.visualize(request);
+    	return visualization.VisualizeData(request);
     }
 
 }

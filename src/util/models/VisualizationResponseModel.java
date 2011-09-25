@@ -2,11 +2,17 @@ package util.models;
 
 public class VisualizationResponseModel {
        
+	private String VisualizationURL;
+	
 	public VisualizationResponseModel(){
 	      	
 	}
 	
-	String csvURL;
-	public String getcsvURL(){return csvURL;}
-	public void setcsvURL(String value){csvURL=value;}
+	public void setVisualizationURL(String visualizationURL) {
+		VisualizationURL = visualizationURL;
+	}
+
+	public String getVisualizationURL() {
+		return VisualizationURL;
+	}
 }
