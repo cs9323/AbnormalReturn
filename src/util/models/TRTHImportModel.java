@@ -2,8 +2,8 @@ package util.models;
 
 import java.io.Serializable;
 
-import component.trthimport.TRTHImportWrapperServiceStub.DateRange;
-import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
+import component.trthimport.TRTHImportCacheServiceStub.DateRange;
+import component.trthimport.TRTHImportCacheServiceStub.TimeRange;
 
 public class TRTHImportModel implements Serializable {
     
