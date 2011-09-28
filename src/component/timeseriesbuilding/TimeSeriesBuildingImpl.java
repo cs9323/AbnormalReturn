@@ -62,12 +62,18 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		Timeseries_request.setUseGMT(useGMT);
 
 		try {
-			if(marketData != null)
+			if(request.getRequest().getMarketDataStatus())
 				marketData = invoke(marketData);
-			if(index != null)
+			else
+				marketData = null;
+			if(request.getRequest().getIndexStatus())
 				index = invoke(index);
-            if(riskFreeAsset != null)
+			else
+				index = null;
+            if(request.getRequest().getRiskFreeAssetStatus())
             	riskFreeAsset = invoke(riskFreeAsset);
+            else
+            	riskFreeAsset = null;
 		} catch (ComputingServiceException e) {
 		    throw new ComputingServiceException(e.getFaultMessage());
         }

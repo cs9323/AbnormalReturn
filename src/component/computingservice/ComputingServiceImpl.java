@@ -3,6 +3,7 @@ package component.computingservice;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
+import org.json.JSONObject;
 import org.osoa.sca.annotations.Reference;
 import org.python.modules.newmodule;
 
@@ -69,6 +70,8 @@ public class ComputingServiceImpl implements ComputingService {
     private String _daysWindow;
     private String _modelType;
     
+    private JSONObject invokeResponse;
+    
     @Override
     public String invoke(String messageType, String marketDataRIC, String indexRIC, String riskRIC,
     		String startDate, String endDate, String startTime, String endTime,
@@ -96,7 +99,7 @@ public class ComputingServiceImpl implements ComputingService {
     	_daysWindow = daysWindow;
     	_modelType = modelType;
     	
-    	String invokeResponse = "";
+    	invokeResponse = new JSONObject();
 
         // TODO Here insert code for TRTHImport
     	TRTHImportModel trthImportRequest = null;
@@ -109,22 +112,41 @@ public class ComputingServiceImpl implements ComputingService {
 	        trthImportResponse = invokeTRTHImport(trthImportRequest);
 	        System.out.println("Back from TRTHImport component");
     	}catch(ComputingServiceException e){
-    		invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+    		invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
     	}
+    	
+    	if(!trthImportResponse.getMarketDataStatus()) {
+    		invokeResponse.put("ComputingServiceException", trthImportResponse.getMarketDataEventSetID());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+    	}
+    	
+    	if(!trthImportResponse.getIndexStatus()) {
+    		invokeResponse.put("ComputingServiceException", trthImportResponse.getIndexEventSetID());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+    	}
+    	
+    	if(!trthImportResponse.getRiskFreeAssetStatus()) {
+    		invokeResponse.put("ComputingServiceException", trthImportResponse.getRiskFreeAssetEventSetID());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+    	}
+    	
         //download & visualization of import data
         try{
 	        String indexEventSetId = trthImportResponse.getIndexEventSetID();
-	        invokeResponse += doDownloadVisualization("TRTHIndex", indexEventSetId);
+	        doDownloadVisualization("TRTHIndex", indexEventSetId);
 	        String marketDataEventSetId = trthImportResponse.getMarketDataEventSetID();
-	        invokeResponse += doDownloadVisualization("TRTHMarket", marketDataEventSetId);
+	        doDownloadVisualization("TRTHMarket", marketDataEventSetId);
 	        String riskFreeAssetEventSetID = trthImportResponse.getRiskFreeAssetEventSetID();
-	        invokeResponse += doDownloadVisualization("TRTHRisk", riskFreeAssetEventSetID);
+	        doDownloadVisualization("TRTHRisk", riskFreeAssetEventSetID);
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         
         // TODO Here insert code for TimeSeriesBuilding
@@ -136,19 +158,19 @@ public class ComputingServiceImpl implements ComputingService {
 	        timeSeriesResponse = invokeTimeSeriesBuilding(timeSeriesModel);
 	        System.out.println("Back from TimeSeriesBuilding Component");
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         //download & visualization of timeSeriesBuilding data
         try{
-        	invokeResponse += doDownloadVisualization("TSBIndex", timeSeriesResponse.getIndexEventSetID());
-	        invokeResponse += doDownloadVisualization("TSBMarket", timeSeriesResponse.getMarketDataEventSetID());
-	        invokeResponse += doDownloadVisualization("TSBRisk", timeSeriesResponse.getRiskFreeAssetEventSetID());
+        	doDownloadVisualization("TSBIndex", timeSeriesResponse.getIndexEventSetID());
+	        doDownloadVisualization("TSBMarket", timeSeriesResponse.getMarketDataEventSetID());
+	        doDownloadVisualization("TSBRisk", timeSeriesResponse.getRiskFreeAssetEventSetID());
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         
         // TODO Here insert code for Merge
@@ -160,20 +182,20 @@ public class ComputingServiceImpl implements ComputingService {
 	        mergeResponse = invokeMerge(mergeModel);
 	        System.out.println("Back from Merge Component");
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         //download & visualization of merge data
         try{
 	        if(mergeModel.getRiskFreeAssetEventSetID() == null)
-	        	invokeResponse += doDownloadVisualization("MergeOnce", mergeResponse.getResultEventSetID());
+	        	doDownloadVisualization("MergeOnce", mergeResponse.getResultEventSetID());
 	        else
-	        	invokeResponse += doDownloadVisualization("MergeTwice", mergeResponse.getResultEventSetID());
+	        	doDownloadVisualization("MergeTwice", mergeResponse.getResultEventSetID());
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         
         // TODO Here insert code for AbnormalReturn
@@ -185,23 +207,22 @@ public class ComputingServiceImpl implements ComputingService {
 	        abnormalreturnResponse = invokeAbnormalReturn(abnormalreturnModel);
 	        System.out.println("Back from AbnormalReturn Component");
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         //download & visualization of abnormalReturn
         try{
-	       	invokeResponse += doDownloadVisualization("ABN", abnormalreturnResponse.getEventSetID());
+	       	doDownloadVisualization("ABN", abnormalreturnResponse.getEventSetID());
         }catch(ComputingServiceException e){
-        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
-        	System.out.println(invokeResponse);
-        	return invokeResponse;
+        	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
         }
         
         //final return result
-        invokeResponse = invokeResponse.substring(0, invokeResponse.length() - 1);
-        System.out.println("Response: " + invokeResponse);
-        return invokeResponse;
+        System.out.println("Response: " + invokeResponse.toString());
+        return invokeResponse.toString();
 
     }
 
@@ -331,20 +352,19 @@ public class ComputingServiceImpl implements ComputingService {
     	return visualization.VisualizeData(request);
     }
     
-    private String doDownloadVisualization(String namePrefix, String eventSetId) throws ComputingServiceException {
+    private void doDownloadVisualization(String namePrefix, String eventSetId) throws ComputingServiceException {
     	String results = "";
     	if(eventSetId != null) {
             DownloadModel DownloadReq = constructDownloadRequest(eventSetId);
             DownloadResponseModel DownloadRsp = invokeDownload(DownloadReq);
-            results += "\"" + namePrefix + "DownloadURL\":\"" + DownloadRsp.getReturnFile().getAbsolutePath() + "\",";
+            invokeResponse.put(namePrefix + "DownloadURL", DownloadRsp.getReturnFile().getAbsolutePath());
             
        		if(!namePrefix.contains("TRTH")){
 	            VisualizationModel VisualizeReq = constructVisualizationModel(eventSetId);
 	            VisualizationResponseModel VisualizeRsp = invokeVisualization(VisualizeReq);
-	            results += "\"" + namePrefix + "VisualizationURL\":\"" + VisualizeRsp.getVisualizationURL() + "\",";
+	            invokeResponse.put(namePrefix + "VisualizationURL", VisualizeRsp.getVisualizationURL());
        		}
     	}
-    	return results;
     }
   
 }

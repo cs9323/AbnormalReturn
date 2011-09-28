@@ -43,22 +43,27 @@ public class MergeImpl implements Merge {
 		String merge2PrefixEv2 = request.getMerge2PrefixEv2();
 		
 		//first merge
-		MergeServiceStub.Merge msg1 = new MergeServiceStub.Merge();
-		msg1.setCredentials(Credentials);
-		msg1.setEventSet1Id(marketDataEventSetID);
-		msg1.setEventSet2Id(indexEventSetID);
-		msg1.setMeasuresEv1(merge1Measure1);
-		msg1.setMeasuresEv2(merge1Measure2);
-		msg1.setMergeOption(merge1Option);
-		msg1.setPrefixEv2(merge1PrefixEv2);
-		msg1.setUserdefinedoption("");
-		
 		MergeServiceStub.MergeResponse response1 = new MergeServiceStub.MergeResponse();
-		try{
-			response1 = stub.merge(msg1);
-		}catch(RemoteException e){
-			throw new ComputingServiceException(e.getMessage());
+		if(marketDataEventSetID != null && indexEventSetID != null){
+			MergeServiceStub.Merge msg1 = new MergeServiceStub.Merge();
+			msg1.setCredentials(Credentials);
+			msg1.setEventSet1Id(marketDataEventSetID);
+			msg1.setEventSet2Id(indexEventSetID);
+			msg1.setMeasuresEv1(merge1Measure1);
+			msg1.setMeasuresEv2(merge1Measure2);
+			msg1.setMergeOption(merge1Option);
+			msg1.setPrefixEv2(merge1PrefixEv2);
+			msg1.setUserdefinedoption("");
+			
+			try{
+				response1 = stub.merge(msg1);
+			}catch(RemoteException e){
+				throw new ComputingServiceException(e.getMessage());
+			}
 		}
+		else
+			throw new ComputingServiceException("EventSetId for merge can't be null.");
+ 
 		String status1 = response1.getStatus();
 		if(status1.equals("er"))
 			throw new ComputingServiceException("In the first merge, " + response1.getMessage());
