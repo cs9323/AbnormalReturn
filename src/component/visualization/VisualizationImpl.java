@@ -24,7 +24,7 @@ public class VisualizationImpl implements Visualization {
 			stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
 		} catch (AxisFault e) {
 			// TODO Auto-generated catch block
-			throw new ComputingServiceException(e);
+			throw new ComputingServiceException(e.getMessage());
 		}
 		
 		VisualizationServiceStub.Visualization req = new VisualizationServiceStub.Visualization();
@@ -38,8 +38,12 @@ public class VisualizationImpl implements Visualization {
 			rsp = stub.visualization(req);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
-			throw new ComputingServiceException(e);
+			throw new ComputingServiceException(e.getMessage());
 		}
+		
+		String status = rsp.getStatus();
+		if(status.equals("er"))
+			throw new ComputingServiceException("In visualization service, " + rsp.getMessage());
 		
 		VisualizationResponseModel result = new VisualizationResponseModel();
 		result.setVisualizationURL(rsp.getMessage());

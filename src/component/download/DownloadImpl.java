@@ -2,13 +2,10 @@ package component.download;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
-import org.apache.commons.io.FileUtils;
 
 import component.download.DowloadEventSetStub.DownloadBinaryFile;
 import component.download.DowloadEventSetStub.DownloadBinaryFileResponse;
@@ -22,8 +19,8 @@ public class DownloadImpl implements Download {
 	@Override
 	public DownloadResponseModel returnResult(DownloadModel request)
 			throws ComputingServiceException {
-		//return generateReturnResult(request);
-		return generateDummyresult(request);
+		return generateReturnResult(request);
+		//return generateDummyresult(request);
 	}
 
 	private DownloadResponseModel generateReturnResult(DownloadModel request) throws ComputingServiceException {
@@ -38,7 +35,7 @@ public class DownloadImpl implements Download {
             stub = new DowloadEventSetStub(wURL);
         } catch (AxisFault e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
 		
 		DownloadBinaryFile download_request = new DownloadBinaryFile();
@@ -51,16 +48,18 @@ public class DownloadImpl implements Download {
             resp = stub.downloadBinaryFile(download_request);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         } catch (IOExceptionException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ComputingServiceException(e.getMessage());
         }
+                
 		File result = (File) resp.get_return();
 		DownloadResponseModel response_model = new DownloadResponseModel();
 		
 		response_model.setReturnFile(result);
-		//resp.set_return(download_request);
+		
+		System.out.println(response_model.getReturnFile());
 		return response_model;
 		
 	}

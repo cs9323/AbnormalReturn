@@ -15,8 +15,8 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
 
     public AbnormalreturnResponseModel calculate(AbnormalreturnModel inputs)
             throws ComputingServiceException {
-        //return doCalculate(inputs);
-    	return dummy(inputs);
+        return doCalculate(inputs);
+    	//return dummy(inputs);
     }
 
     private AbnormalreturnResponseModel dummy(AbnormalreturnModel inputs)
@@ -34,8 +34,7 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
     private AbnormalreturnResponseModel doCalculate(AbnormalreturnModel inputs)
             throws ComputingServiceException {
     	
-    	System.out.println("Input EventSetID:" + inputs.getEventID()
-                + " received...");
+    	System.out.println("Input EventSetID:" + inputs.getEventID());
     	
         AbnormalreturnServiceStub arsStub;
 
@@ -44,7 +43,7 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
                     "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/AbnormalreturnService");
         } catch (AxisFault e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
 
         Abnormalreturn ar = new Abnormalreturn();
@@ -63,13 +62,16 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
             response = arsStub.abnormalreturn(ar);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
+        
+        if(response.getStatus().equals("er"))
+        	throw new ComputingServiceException("In abnormalReturn service, " + response.getMessage());
+        
         AbnormalreturnResponseModel arr = new AbnormalreturnResponseModel();
         arr.setEventSetID(response.getMessage());
         arr.setStatus(response.getStatus());
-        System.out.println(arr.getStatus());
-        System.out.println(arr.getEventSetID());
+        System.out.println(arr.getStatus() + ": " + arr.getEventSetID());
         return arr;
     }
 }
