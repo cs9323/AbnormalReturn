@@ -73,7 +73,6 @@ public class ComputingServiceImpl implements ComputingService {
         	System.out.println(invokeResponse);
         	return invokeResponse;
     	}
-        
         //download & visualization of import data
         try{
 	        String indexEventSetId = trthImportResponse.getIndexEventSetID();
@@ -101,7 +100,6 @@ public class ComputingServiceImpl implements ComputingService {
         	System.out.println(invokeResponse);
         	return invokeResponse;
         }
-        
         //download & visualization of timeSeriesBuilding data
         try{
         	invokeResponse += doDownloadVisualization("TSBIndex", timeSeriesResponse.getIndexEventSetID());
@@ -126,7 +124,6 @@ public class ComputingServiceImpl implements ComputingService {
         	System.out.println(invokeResponse);
         	return invokeResponse;
         }
-        
         //download & visualization of merge data
         try{
 	        if(mergeModel.getRiskFreeAssetEventSetID() == null)
@@ -138,18 +135,30 @@ public class ComputingServiceImpl implements ComputingService {
         	System.out.println(invokeResponse);
         	return invokeResponse;
         }
-        // TODO Here insert code for AbnormalReturn
-//            AbnormalreturnModel abnormalreturnModel = constructAbnormalreturnModel(mergeResponse);
-//            System.out.println("Invoking AbnormalReturn Component");
-//            AbnormalreturnResponseModel abnormalreturnResponse = invokeAbnormalReturn(abnormalreturnModel);
-//            System.out.println("Back from AbnormalReturn Component");
-//
-//            // TODO Here insert code for Download
-//            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse.getEventSetID());
-//            System.out.println("Invoking Download component...");
-//            DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
-//            System.out.println("Back from Download component.");
         
+        // TODO Here insert code for AbnormalReturn
+        AbnormalreturnModel abnormalreturnModel = null;
+        AbnormalreturnResponseModel abnormalreturnResponse = null;
+        try{
+	        abnormalreturnModel = constructAbnormalreturnModel(mergeResponse);
+	        System.out.println("Invoking AbnormalReturn Component");
+	        abnormalreturnResponse = invokeAbnormalReturn(abnormalreturnModel);
+	        System.out.println("Back from AbnormalReturn Component");
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        //download & visualization of abnormalReturn
+        try{
+	       	invokeResponse += doDownloadVisualization("ABN", abnormalreturnResponse.getEventSetID());
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        
+        //final return result
         invokeResponse = invokeResponse.substring(0, invokeResponse.length() - 1);
         System.out.println("Response: " + invokeResponse);
         return invokeResponse;
