@@ -27,8 +27,8 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	
 	@Override
 	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
-		//return generateStatusMsg(request);
-		return dummy(request);
+		return generateStatusMsg(request);
+		//return dummy(request);
 	}
 	
 	
@@ -49,7 +49,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		try {
             stub = new TimeseriesServiceStub(wURL);
         } catch (AxisFault e) {
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
 		Timeseries_request = new Timeseries();
 		
@@ -62,11 +62,14 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		Timeseries_request.setUseGMT(useGMT);
 
 		try {
-            marketData = invoke(marketData);
-            index = invoke(index);
-            riskFreeAsset = invoke(riskFreeAsset);
-		} catch (RemoteException e) {
-		    throw new ComputingServiceException(e);
+			if(marketData != null)
+				marketData = invoke(marketData);
+			if(index != null)
+				index = invoke(index);
+            if(riskFreeAsset != null)
+            	riskFreeAsset = invoke(riskFreeAsset);
+		} catch (ComputingServiceException e) {
+		    throw new ComputingServiceException(e.getFaultMessage());
         }
 		
 		TimeSeriesResponseModel response = new TimeSeriesResponseModel(marketData, index, riskFreeAsset);
@@ -74,7 +77,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		
 	}
 	
-	public String invoke(String EventSetID) throws RemoteException{
+	public String invoke(String EventSetID) throws ComputingServiceException {
 		
 		Timeseries_request.setEventSetId(EventSetID);
 		TimeseriesResponse response = null;
@@ -82,7 +85,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		try {
 			response = stub.timeseries(Timeseries_request);
 		} catch (RemoteException e) {
-			throw e;
+			throw new ComputingServiceException(e.getMessage());
 		}
 		
 		String statusmsg = response.getMessage();
@@ -97,7 +100,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 			return statusmsg;
 		}
 		if (status.equals("er")){
-			return "error";
+			throw new ComputingServiceException("In timeSeriesBuilding service, " + statusmsg);
 		}
 		return "";
 	}

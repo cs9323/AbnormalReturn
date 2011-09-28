@@ -14,8 +14,8 @@ import component.merge.MergeServiceStub.CredentialsHeader;
 public class MergeImpl implements Merge {
 	
 	public MergeResponseModel MergeData(MergeModel request) throws ComputingServiceException {
-		//return doMergeData(request);
-		return dummyMergeData(request);
+		return doMergeData(request);
+		//return dummyMergeData(request);
 	}
 	
 	private MergeResponseModel doMergeData(MergeModel request) throws ComputingServiceException {
@@ -26,7 +26,7 @@ public class MergeImpl implements Merge {
             stub = new MergeServiceStub(wsURL);
             stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
         } catch (AxisFault e1) {
-            throw new ComputingServiceException(e1);
+            throw new ComputingServiceException(e1.getMessage());
         }
 		
 		String marketDataEventSetID = request.getMarketDataEventSetID();
@@ -57,29 +57,41 @@ public class MergeImpl implements Merge {
 		try{
 			response1 = stub.merge(msg1);
 		}catch(RemoteException e){
-			e.printStackTrace();
+			throw new ComputingServiceException(e.getMessage());
 		}
+		String status1 = response1.getStatus();
+		if(status1.equals("er"))
+			throw new ComputingServiceException("In the first merge, " + response1.getMessage());
 		
 		String ResultEventSetID1 = response1.getMessage();
 		System.out.println(response1.getStatus() + ": " + response1.getMessage());
 		
 		//second merge
-		MergeServiceStub.Merge msg2 = new MergeServiceStub.Merge();
-		msg2.setCredentials(Credentials);
-		msg2.setEventSet1Id(ResultEventSetID1);
-		msg2.setEventSet2Id(riskFreeAssetEventSetID);
-		msg2.setMeasuresEv1(merge2Measure1);
-		msg2.setMeasuresEv2(merge2Measure2);
-		msg2.setMergeOption(merge2Option);
-		msg2.setPrefixEv2(merge2PrefixEv2);
-		msg2.setUserdefinedoption("");
-		
 		MergeServiceStub.MergeResponse response2 = new MergeServiceStub.MergeResponse();
-		try{
-			response2 = stub.merge(msg2);
-		}catch(RemoteException e){
-			e.printStackTrace();
+		if(riskFreeAssetEventSetID != null){
+			MergeServiceStub.Merge msg2 = new MergeServiceStub.Merge();
+			msg2.setCredentials(Credentials);
+			msg2.setEventSet1Id(ResultEventSetID1);
+			msg2.setEventSet2Id(riskFreeAssetEventSetID);
+			msg2.setMeasuresEv1(merge2Measure1);
+			msg2.setMeasuresEv2(merge2Measure2);
+			msg2.setMergeOption(merge2Option);
+			msg2.setPrefixEv2(merge2PrefixEv2);
+			msg2.setUserdefinedoption("");
+			
+			try{
+				response2 = stub.merge(msg2);
+			}catch(RemoteException e){
+				throw new ComputingServiceException(e.getMessage());
+			}
 		}
+		else{
+			response2 = response1;
+		}
+		
+		String status2 = response2.getStatus();
+		if(status2.equals("er"))
+			throw new ComputingServiceException("In the second merge, " + response2.getMessage());
 		
 		MergeResponseModel resModel = new MergeResponseModel();
 		resModel.setResultEventSetID(response2.getMessage());

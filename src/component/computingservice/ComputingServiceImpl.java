@@ -55,63 +55,99 @@ public class ComputingServiceImpl implements ComputingService {
     public String invoke(String messageType, String RIC, String startTime,
             String endTime, String startDate, String endDate, String useGMT,
             String useCorporateActions) throws ComputingServiceException {
-        try {
+    	
+    	String invokeResponse = "";
 
-            // TODO Here insert code for TRTHImport
+        // TODO Here insert code for TRTHImport
 
-            TRTHImportModel trthImportRequest = constructTRTHImportRequest(
-                    messageType, RIC, startTime, endTime, startDate, endDate,
-                    useGMT, useCorporateActions);
+        TRTHImportModel trthImportRequest = constructTRTHImportRequest(
+                messageType, RIC, startTime, endTime, startDate, endDate,
+                useGMT, useCorporateActions);
 
-            System.out.println("Invoking TRTHImport component");
-            TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
-            System.out.println("Back from TRTHImport component");
-
-            // TODO Here insert code for TimeSeriesBuilding
-
-            TimeSeriesModel timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
-
-            System.out.println("Invoking TimeSeriesBuilding Component");
-            TimeSeriesResponseModel timeSeriesResponse = invokeTimeSeriesBuilding(timeSeriesModel);
-            System.out.println("Back from TimeSeriesBuilding Component");
-
-            // TODO Here insert code for Merge
-            MergeModel mergeModel = constructMergeModel(timeSeriesResponse);
-            System.out.println("Invoking Merge Component");
-            MergeResponseModel mergeResponse = invokeMerge(mergeModel);
-            System.out.println("Back from Merge Component");
-
-            // TODO Here insert code for Download
-            DownloadModel downloadRequest1 = constructDownloadRequest(mergeResponse.getResultEventSetID());
-            System.out.println("Invoking Download component...");
-            DownloadResponseModel downloadResponse1 = invokeDownload(downloadRequest1);
-            System.out.println("Back from Download component.");
-            
-            VisualizationModel visualizationRequest = constructVisualizationModel(mergeResponse.getResultEventSetID());
-            System.out.println("Invoking Visualization component...");
-            VisualizationResponseModel visualizationResponse = invokeVisualization(visualizationRequest);
-            System.out.println("Back from Visualization component.");
-            
-            // TODO Here insert code for AbnormalReturn
-            AbnormalreturnModel abnormalreturnModel = constructAbnormalreturnModel(mergeResponse);
-            System.out.println("Invoking AbnormalReturn Component");
-            AbnormalreturnResponseModel abnormalreturnResponse = invokeAbnormalReturn(abnormalreturnModel);
-            System.out.println("Back from AbnormalReturn Component");
-
-            // TODO Here insert code for Download
-            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse.getEventSetID());
-            System.out.println("Invoking Download component...");
-            DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
-            System.out.println("Back from Download component.");
-            
-            String url = downloadResponse.getReturnFile().getAbsolutePath();
-            url = url.substring(url.indexOf("ROOT") + 4, url.length());
-            return url;
-
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            throw new ComputingServiceException(e);
+        System.out.println("Invoking TRTHImport component");
+        TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
+        System.out.println("Back from TRTHImport component");
+        
+        //download & visualization of import data
+        try{
+	        String indexEventSetId = trthImportResponse.getIndexEventSetID();
+	        invokeResponse += doDownloadVisualization("TRTHIndex", indexEventSetId);
+	        String marketDataEventSetId = trthImportResponse.getMarketDataEventSetID();
+	        invokeResponse += doDownloadVisualization("TRTHMarket", marketDataEventSetId);
+	        String riskFreeAssetEventSetID = trthImportResponse.getRiskFreeAssetEventSetID();
+	        invokeResponse += doDownloadVisualization("TRTHRisk", riskFreeAssetEventSetID);
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
         }
+        
+        // TODO Here insert code for TimeSeriesBuilding
+        TimeSeriesModel timeSeriesModel = null;
+        TimeSeriesResponseModel timeSeriesResponse = null;
+        try{
+	        timeSeriesModel = constructTimeSeriesModel(trthImportResponse);
+	        System.out.println("Invoking TimeSeriesBuilding Component");
+	        timeSeriesResponse = invokeTimeSeriesBuilding(timeSeriesModel);
+	        System.out.println("Back from TimeSeriesBuilding Component");
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        
+        //download & visualization of timeSeriesBuilding data
+        try{
+        	invokeResponse += doDownloadVisualization("TSBIndex", timeSeriesResponse.getIndexEventSetID());
+	        invokeResponse += doDownloadVisualization("TSBMarket", timeSeriesResponse.getMarketDataEventSetID());
+	        invokeResponse += doDownloadVisualization("TSBRisk", timeSeriesResponse.getRiskFreeAssetEventSetID());
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        
+        // TODO Here insert code for Merge
+        MergeModel mergeModel = null;
+        MergeResponseModel mergeResponse = null;
+        try{
+	        mergeModel = constructMergeModel(timeSeriesResponse);
+	        System.out.println("Invoking Merge Component");
+	        mergeResponse = invokeMerge(mergeModel);
+	        System.out.println("Back from Merge Component");
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        
+        //download & visualization of merge data
+        try{
+	        if(mergeModel.getRiskFreeAssetEventSetID() == null)
+	        	invokeResponse += doDownloadVisualization("MergeOnce", mergeResponse.getResultEventSetID());
+	        else
+	        	invokeResponse += doDownloadVisualization("MergeTwice", mergeResponse.getResultEventSetID());
+        }catch(ComputingServiceException e){
+        	invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+        }
+        // TODO Here insert code for AbnormalReturn
+//            AbnormalreturnModel abnormalreturnModel = constructAbnormalreturnModel(mergeResponse);
+//            System.out.println("Invoking AbnormalReturn Component");
+//            AbnormalreturnResponseModel abnormalreturnResponse = invokeAbnormalReturn(abnormalreturnModel);
+//            System.out.println("Back from AbnormalReturn Component");
+//
+//            // TODO Here insert code for Download
+//            DownloadModel downloadRequest = constructDownloadRequest(abnormalreturnResponse.getEventSetID());
+//            System.out.println("Invoking Download component...");
+//            DownloadResponseModel downloadResponse = invokeDownload(downloadRequest);
+//            System.out.println("Back from Download component.");
+        
+        invokeResponse = invokeResponse.substring(0, invokeResponse.length() - 1);
+        System.out.println("Response: " + invokeResponse);
+        return invokeResponse;
+
     }
 
     private TRTHImportModel constructTRTHImportRequest(String messageType,
@@ -185,7 +221,6 @@ public class ComputingServiceImpl implements ComputingService {
 
     private DownloadModel constructDownloadRequest(
             String eventSetId) {
-        //String eventSetId = request.getEventSetID();
         return new DownloadModel(eventSetId);
     }
     
@@ -233,5 +268,21 @@ public class ComputingServiceImpl implements ComputingService {
             throws ComputingServiceException{
     	return visualization.VisualizeData(request);
     }
-
+    
+    private String doDownloadVisualization(String namePrefix, String eventSetId) throws ComputingServiceException {
+    	String results = "";
+    	if(eventSetId != null) {
+            DownloadModel DownloadReq = constructDownloadRequest(eventSetId);
+            DownloadResponseModel DownloadRsp = invokeDownload(DownloadReq);
+            results += "\"" + namePrefix + "DownloadURL\":\"" + DownloadRsp.getReturnFile().getAbsolutePath() + "\",";
+            
+       		if(!namePrefix.contains("TRTH")){
+	            VisualizationModel VisualizeReq = constructVisualizationModel(eventSetId);
+	            VisualizationResponseModel VisualizeRsp = invokeVisualization(VisualizeReq);
+	            results += "\"" + namePrefix + "VisualizationURL\":\"" + VisualizeRsp.getVisualizationURL() + "\",";
+       		}
+    	}
+    	return results;
+    }
+  
 }
