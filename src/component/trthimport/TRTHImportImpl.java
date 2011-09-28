@@ -42,6 +42,7 @@ public class TRTHImportImpl implements TRTHImport {
     }
 
     response = new TRTHImportResponseModel();
+    response.setTimeRange(request.getTimeRange());
 
     param = new TRTHImportCache();
     param.setMessageType(request.getMessageType());
