@@ -11,18 +11,17 @@ public class TRTHImportResponseModel implements Serializable{
     private String indexEventSetID;
     private String riskFreeAssetEventSetID;
     private TimeRange timeRange;
-    private String status;
+    private boolean status = true;
     
     public TRTHImportResponseModel() {}
     
     public TRTHImportResponseModel(String marketDataEventSetID,
                                     String indexEventSetID,
-                                    String riskFreeAssetEventSetID,
-                                    String status) {
+                                    String riskFreeAssetEventSetID
+                                    ) {
         this.marketDataEventSetID = marketDataEventSetID;
         this.indexEventSetID = indexEventSetID;
         this.riskFreeAssetEventSetID = riskFreeAssetEventSetID;
-        this.status = status;
     }
     
     
@@ -51,11 +50,11 @@ public class TRTHImportResponseModel implements Serializable{
         this.riskFreeAssetEventSetID = riskFreeAssetEventSetID;
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
