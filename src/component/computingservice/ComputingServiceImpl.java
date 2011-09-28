@@ -27,6 +27,7 @@ import component.merge.MergeServiceStub.CredentialsHeader;
 import component.timeseriesbuilding.TimeSeriesBuilding;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeRange;
 import component.trthimport.TRTHImport;
+import component.trthimport.TRTHImportCacheServiceStub.DateRange;
 import component.visualization.Visualization;
 import component.visualization.VisualizationServiceStub;
 
@@ -51,10 +52,49 @@ public class ComputingServiceImpl implements ComputingService {
     @Reference
     public Visualization visualization;
 
+    private String _messageType;
+    private String _marketDataRIC;
+    private String _indexRIC;
+    private String _riskRIC;
+    private String _startDate;
+    private String _endDate;
+    private String _startTime;
+    private String _endTime;
+    private String _useGMT;
+    private String _useCorporationAction;
+    private String _Measurement;
+    private String _intervalUnit;
+    private String _intervalDuration;
+    private String _mergeOption;
+    private String _daysWindow;
+    private String _modelType;
+    
     @Override
-    public String invoke(String messageType, String RIC, String startTime,
-            String endTime, String startDate, String endDate, String useGMT,
-            String useCorporateActions) throws ComputingServiceException {
+    public String invoke(String messageType, String marketDataRIC, String indexRIC, String riskRIC,
+    		String startDate, String endDate, String startTime, String endTime,
+            String useGMT, String useCorporationAction, 
+            String Measurement, String intervalUnit, String intervalDuration,
+            String mergeOption,
+            String daysWindow, String modelType) 
+    		throws ComputingServiceException {
+    	
+    	// Set all the global variables
+    	_messageType = messageType;
+    	_marketDataRIC = marketDataRIC;
+    	_indexRIC = indexRIC;
+    	_riskRIC = riskRIC;
+    	_startDate = startDate;
+    	_endDate = endDate;
+    	_startTime = startTime;
+    	_endTime = endTime;
+    	_useGMT = useGMT;
+    	_useCorporationAction = useCorporationAction;
+    	_Measurement = Measurement;
+    	_intervalUnit = intervalUnit;
+    	_intervalDuration = intervalDuration;
+    	_mergeOption = mergeOption;
+    	_daysWindow = daysWindow;
+    	_modelType = modelType;
     	
     	String invokeResponse = "";
 
@@ -63,8 +103,8 @@ public class ComputingServiceImpl implements ComputingService {
     	TRTHImportResponseModel trthImportResponse = null;
     	try{
 	        trthImportRequest = constructTRTHImportRequest(
-	                messageType, RIC, startTime, endTime, startDate, endDate,
-	                useGMT, useCorporateActions);
+	                messageType, marketDataRIC, indexRIC, riskRIC, startTime, endTime, 
+	                startDate, endDate, useGMT, useCorporationAction);
 	        System.out.println("Invoking TRTHImport component");
 	        trthImportResponse = invokeTRTHImport(trthImportRequest);
 	        System.out.println("Back from TRTHImport component");
@@ -166,11 +206,18 @@ public class ComputingServiceImpl implements ComputingService {
     }
 
     private TRTHImportModel constructTRTHImportRequest(String messageType,
-            String RIC, String startTime, String endTime, String startDate,
-            String endDate, String useGMT, String useCorporateActions) {
+            String marketDataRIC, String indexRIC, String riskRIC, String startTime, String endTime, 
+            String startDate, String endDate, String useGMT, String useCorporationAction) {
+    	DateRange dateRange = new DateRange();
+    	dateRange.setStart(startDate);
+    	dateRange.setEnd(endDate);
+    	component.trthimport.TRTHImportCacheServiceStub.TimeRange timeRange 
+    					= new component.trthimport.TRTHImportCacheServiceStub.TimeRange();
+    	timeRange.setStart(startTime);
+    	timeRange.setEnd(endTime);
 
-        return new TRTHImportModel(messageType, RIC, startTime, endTime,
-                startDate, endDate, useGMT, useCorporateActions);
+        return new TRTHImportModel(messageType, marketDataRIC, indexRIC, riskRIC, dateRange,
+                timeRange, useGMT, useCorporationAction);
     }
 
     private TimeSeriesModel constructTimeSeriesModel(
@@ -181,15 +228,15 @@ public class ComputingServiceImpl implements ComputingService {
         header.setUsername("");
 
         component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString measures = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
-        measures.addString("ClsPrice");
+        measures.addString(_Measurement);
 
         component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString rics = new component.timeseriesbuilding.TimeseriesServiceStub.ArrayOfString();
         rics.addString("ALL");
 
-        String intervalDuration = "0";
-        String intervalUnit = "spot";
+        String intervalDuration = _intervalDuration;
+        String intervalUnit = _intervalUnit;
 
-        String useGMT = "true";
+        String useGMT = _useGMT;
 
         return new TimeSeriesModel(header, request, measures, rics,
                 intervalDuration, intervalUnit, useGMT);
@@ -203,16 +250,16 @@ public class ComputingServiceImpl implements ComputingService {
         Credentials.setPassword("");
         Credentials.setUsername("");
         ArrayOfString Merge1MeasuresEv1 = new ArrayOfString();
-        Merge1MeasuresEv1.addString("ClsPrice");
+        Merge1MeasuresEv1.addString(_Measurement);
         ArrayOfString Merge1MeasuresEv2 = new ArrayOfString();
-        Merge1MeasuresEv2.addString("ClsPrice");
+        Merge1MeasuresEv2.addString(_Measurement);
         ArrayOfString Merge2MeasuresEv1 = new ArrayOfString();
-        Merge2MeasuresEv1.addString("ClsPrice");
-        Merge2MeasuresEv1.addString("Index_ClsPrice");
+        Merge2MeasuresEv1.addString(_Measurement);
+        Merge2MeasuresEv1.addString("Index_" + _Measurement);
         ArrayOfString Merge2MeasuresEv2 = new ArrayOfString();
-        Merge2MeasuresEv2.addString("ClsPrice");
-        String Merge1Option = "ByFile1ClosestBeforeOrEqualToEndInterval";
-        String Merge2Option = "ByFile1ClosestBeforeOrEqualToEndInterval";
+        Merge2MeasuresEv2.addString(_Measurement);
+        String Merge1Option = _mergeOption;
+        String Merge2Option = _mergeOption;
         String Merge1PrefixEv2 = "Index";
         String Merge2PrefixEv2 = "RiskFreeAssetReturn";
 
@@ -227,8 +274,8 @@ public class ComputingServiceImpl implements ComputingService {
         component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader ch = new component.abnormalreturns.AbnormalreturnServiceStub.CredentialsHeader();
         ch.setPassword("");
         ch.setUsername("");
-        String modelType = "marketmodel";
-        int dayWindow = 2;
+        String modelType = _modelType;
+        int dayWindow = Integer.parseInt(_daysWindow);
         return new AbnormalreturnModel(ch, request.getResultEventSetID(),
                 modelType, dayWindow);
     }
@@ -243,7 +290,7 @@ public class ComputingServiceImpl implements ComputingService {
     	VisualizationModel request = new VisualizationModel();
     	String uri = "http://soc-server2.cse.unsw.edu.au:14080/";
     	VisualizationServiceStub.ArrayOfString columns = new VisualizationServiceStub.ArrayOfString();
-    	columns.addString("ClsPrice");
+    	columns.addString(_Measurement);
     	columns.addString("news_abnormal");
     	VisualizationServiceStub.CredentialsHeader header = new VisualizationServiceStub.CredentialsHeader();
     	header.setPassword("");

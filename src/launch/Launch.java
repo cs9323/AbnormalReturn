@@ -19,7 +19,12 @@ public class Launch {
         		"StartDate, EndDate, " +
         		"useGMT, useCorporationAction");
         try {
-            service.invoke("0","BHP.AX","00:00:00.000","23:59:59.999","01-01-2004","01-12-2009","1","");
+            service.invoke("EndOfDay", "BHP.AX", "BHP.AX", "BHP.AX",
+            		"01-01-2004", "01-12-2009", "00:00:00.000", "23:59:59.999",
+                    "true", "", 
+                    "ClsPrice", "spot", "0",
+                    "ByFile1ClosestBeforeOrEqualToEndInterval",
+                    "3", "marketmodel");
         } catch (Exception e) {
             e.printStackTrace();
         } 
