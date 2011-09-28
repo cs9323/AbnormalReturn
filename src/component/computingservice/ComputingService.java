@@ -6,9 +6,11 @@ import util.exceptions.ComputingServiceException;
 
 @Remotable
 public interface ComputingService {
-    public String invoke(String messageType, String RIC, 
-                          String startTime, String endTime,
-                          String startDate, String endDate,
-                          String useGMT, String useCorporateActions) 
-                                  throws ComputingServiceException;
+	public String invoke(String messageType, String marketDataRIC, String indexRIC, String riskRIC,
+    		String startDate, String endDate, String startTime, String endTime,
+            String useGMT, String useCorporationAction, 
+            String Measurement, String intervalUnit, String intervalDuration,
+            String mergeOption,
+            String daysWindow, String modelType) 
+    		throws ComputingServiceException;
 }
