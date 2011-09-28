@@ -8,8 +8,12 @@ public class TRTHImportResponseModel implements Serializable{
     
     private static final long serialVersionUID = 1L;
     private String marketDataEventSetID;
+    private boolean marketDataStatus;
     private String indexEventSetID;
+    private boolean indexStatus;
     private String riskFreeAssetEventSetID;
+    private boolean riskFreeAssetStatus;
+
     private TimeRange timeRange;
     private boolean status = true;
     
@@ -64,6 +68,30 @@ public class TRTHImportResponseModel implements Serializable{
 
     public void setTimeRange(TimeRange timeRange) {
         this.timeRange = timeRange;
+    }
+    
+    public boolean getMarketDataStatus() {
+      return marketDataStatus;
+    }
+
+    public void setMarketDataStatus(boolean marketDataStatus) {
+      this.marketDataStatus = marketDataStatus;
+    }
+
+    public boolean getIndexStatus() {
+      return indexStatus;
+    }
+
+    public void setIndexStatus(boolean indexStatus) {
+      this.indexStatus = indexStatus;
+    }
+
+    public boolean getRiskFreeAssetStatus() {
+      return riskFreeAssetStatus;
+    }
+
+    public void setRiskFreeAssetStatus(boolean riskFreeAssetStatus) {
+      this.riskFreeAssetStatus = riskFreeAssetStatus;
     }
     
 }

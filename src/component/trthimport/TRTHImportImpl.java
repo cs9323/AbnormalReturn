@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.apache.axis2.AxisFault;
+import org.codehaus.jettison.json.JSONObject;
 
 import component.trthimport.TRTHImportCacheServiceStub.TRTHImportCache;
 import component.trthimport.TRTHImportCacheServiceStub.DateRange;
@@ -52,44 +53,52 @@ public class TRTHImportImpl implements TRTHImport {
     param.setAddCorporateActions(request.getUseCorporateActions());
 
     param.setRIC(request.getMarketDataRIC());
-    String marketData = importData();
-    if (marketData != null) {
-      response.setMarketDataEventSetID(marketData);
-    }
+    importData(1);
 
     param.setRIC(request.getIndexRIC());
-    String index = importData();
-    if (index != null) {
-      response.setIndexEventSetID(index);
-    }
+    importData(2);
 
     param.setRIC(request.getRiskRIC());
-    String risk = importData();
-    if (index != null) {
-      response.setRiskFreeAssetEventSetID(risk);
-    }
+    importData(3);
 
     return response;
 
   }
 
-  private String importData() throws ComputingServiceException {
+  private void importData(int process) throws ComputingServiceException {
 
     TRTHImportCacheResponse res = null;
     try {
+      
       res = stub.tRTHImportCache(param);
     } catch (RemoteException e) {
       // TODO Auto-generated catch block
       throw new ComputingServiceException(e);
     }
+    
+    boolean status = true;
+    String message = res.getMessage();
 
     if (res.getStatus().toUpperCase().equals("OK")) {
-      return res.getMessage();
+      status = true;
     } else {
-      response.setStatus(false);
+      status = false;
+    }
+    
+    switch(process) {
+    case 1:
+      response.setMarketDataEventSetID(message);
+      response.setMarketDataStatus(status);
+      break;
+    case 2:
+      response.setIndexEventSetID(message);
+      response.setIndexStatus(status);
+      break;
+    case 3:
+      response.setRiskFreeAssetEventSetID(message);
+      response.setRiskFreeAssetStatus(status);
     }
 
-    return null;
   }
 
   @SuppressWarnings({"unused"})
