@@ -59,14 +59,20 @@ public class ComputingServiceImpl implements ComputingService {
     	String invokeResponse = "";
 
         // TODO Here insert code for TRTHImport
-
-        TRTHImportModel trthImportRequest = constructTRTHImportRequest(
-                messageType, RIC, startTime, endTime, startDate, endDate,
-                useGMT, useCorporateActions);
-
-        System.out.println("Invoking TRTHImport component");
-        TRTHImportResponseModel trthImportResponse = invokeTRTHImport(trthImportRequest);
-        System.out.println("Back from TRTHImport component");
+    	TRTHImportModel trthImportRequest = null;
+    	TRTHImportResponseModel trthImportResponse = null;
+    	try{
+	        trthImportRequest = constructTRTHImportRequest(
+	                messageType, RIC, startTime, endTime, startDate, endDate,
+	                useGMT, useCorporateActions);
+	        System.out.println("Invoking TRTHImport component");
+	        trthImportResponse = invokeTRTHImport(trthImportRequest);
+	        System.out.println("Back from TRTHImport component");
+    	}catch(ComputingServiceException e){
+    		invokeResponse += "\"ComputingServiceException\":\"" + e.getFaultMessage() + "\"";
+        	System.out.println(invokeResponse);
+        	return invokeResponse;
+    	}
         
         //download & visualization of import data
         try{

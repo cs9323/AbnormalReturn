@@ -10,6 +10,7 @@
     <reference name="merge" target="MergeComponent" />
     <reference name="abnormalReturns" target="AbnormalReturnsComponent" />
     <reference name="download" target="DownloadComponent" />
+    <reference name="visualization" target="VisualizationComponent"></reference>
     
     <service name="ComputingService" promote="ComputingServiceComponent/ComputingService">
       <interface.java interface="component.computingservice.ComputingService"/>
@@ -37,7 +38,7 @@
     <implementation.java class="component.download.DownloadImpl"/>
   </component>
   
-  <component name="Visualization">
+  <component name="VisualizationComponent">
     <implementation.java class="component.visualization.VisualizationImpl"/>
   </component>
 

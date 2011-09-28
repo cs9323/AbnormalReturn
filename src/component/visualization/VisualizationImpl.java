@@ -43,10 +43,10 @@ public class VisualizationImpl implements Visualization {
 		
 		String status = rsp.getStatus();
 		if(status.equals("er"))
-			throw new ComputingServiceException(rsp.getMessage());
+			throw new ComputingServiceException("In visualization service, " + rsp.getMessage());
 		
 		VisualizationResponseModel result = new VisualizationResponseModel();
-		result.setVisualizationURL("In visualization service, " + rsp.getMessage());
+		result.setVisualizationURL(rsp.getMessage());
 		
 		System.out.println(rsp.getStatus() + ": " + rsp.getMessage());
 		return result;

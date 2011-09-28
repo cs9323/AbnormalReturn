@@ -33,7 +33,7 @@ public class TRTHImportImpl implements TRTHImport {
         try {
             stub = new TRTHImportCacheServiceStub(wsURL);
         } catch (AxisFault e) {
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
         stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(30000);
         TRTHImportCache wrapper = new TRTHImportCache();
@@ -50,23 +50,29 @@ public class TRTHImportImpl implements TRTHImport {
         try {
             response = stub.tRTHImportCache(wrapper);
         } catch (RemoteException e) {
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
+        if(response.getStatus().equals("er"))
+        	throw new ComputingServiceException(response.getMessage());
         System.out.println("Get: " + response.getMessage());
         TRTHImportResponseModel res = new TRTHImportResponseModel();
         res.setMarketDataEventSetID(response.getMessage());
         try {
             response = stub.tRTHImportCache(wrapper);
         } catch (RemoteException e) {
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
+        if(response.getStatus().equals("er"))
+        	throw new ComputingServiceException(response.getMessage());
         System.out.println("Get: " + response.getMessage());
         res.setIndexEventSetID(response.getMessage());
         try {
             response = stub.tRTHImportCache(wrapper);
         } catch (RemoteException e) {
-            throw new ComputingServiceException(e);
+            throw new ComputingServiceException(e.getMessage());
         }
+        if(response.getStatus().equals("er"))
+        	throw new ComputingServiceException(response.getMessage());
         System.out.println("Get: " + response.getMessage());
         res.setRiskFreeAssetEventSetID(response.getMessage());
         
