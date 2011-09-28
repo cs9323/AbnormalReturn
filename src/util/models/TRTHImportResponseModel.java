@@ -2,7 +2,7 @@ package util.models;
 
 import java.io.Serializable;
 
-import component.trthimport.TRTHImportWrapperServiceStub.TimeRange;
+import component.trthimport.TRTHImportCacheServiceStub.TimeRange;
 
 public class TRTHImportResponseModel implements Serializable{
     
