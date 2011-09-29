@@ -53,22 +53,22 @@ public class ComputingServiceImpl implements ComputingService {
     @Reference
     public Visualization visualization;
 
-    private String _messageType;
-    private String _marketDataRIC;
-    private String _indexRIC;
-    private String _riskRIC;
-    private String _startDate;
-    private String _endDate;
-    private String _startTime;
-    private String _endTime;
-    private String _useGMT;
-    private String _useCorporationAction;
-    private String _Measurement;
-    private String _intervalUnit;
-    private String _intervalDuration;
-    private String _mergeOption;
-    private String _daysWindow;
-    private String _modelType;
+    private String _messageType = null;
+    private String _marketDataRIC = null;
+    private String _indexRIC = null;
+    private String _riskRIC = null;
+    private String _startDate = null;
+    private String _endDate = null;
+    private String _startTime = null;
+    private String _endTime = null;
+    private String _useGMT = null;
+    private String _useCorporationAction = null;
+    private String _Measurement = null;
+    private String _intervalUnit = null;
+    private String _intervalDuration = null;
+    private String _mergeOption = null;
+    private String _daysWindow = null;
+    private String _modelType = null;
     
     private JSONObject invokeResponse;
     
@@ -118,21 +118,21 @@ public class ComputingServiceImpl implements ComputingService {
     	}
     	
     	if(!trthImportResponse.getMarketDataStatus()) {
-    		invokeResponse.put("ComputingServiceException", trthImportResponse.getMarketDataEventSetID());
+    		invokeResponse.put("TRTHImportMarketException", trthImportResponse.getMarketDataEventSetID());
         	System.out.println(invokeResponse.toString());
-        	return invokeResponse.toString();
+        	trthImportResponse.setMarketDataEventSetID(null);
     	}
     	
     	if(!trthImportResponse.getIndexStatus()) {
-    		invokeResponse.put("ComputingServiceException", trthImportResponse.getIndexEventSetID());
+    		invokeResponse.put("TRTHImportIndexException", trthImportResponse.getIndexEventSetID());
         	System.out.println(invokeResponse.toString());
-        	return invokeResponse.toString();
+        	trthImportResponse.setIndexEventSetID(null);
     	}
     	
     	if(!trthImportResponse.getRiskFreeAssetStatus()) {
-    		invokeResponse.put("ComputingServiceException", trthImportResponse.getRiskFreeAssetEventSetID());
+    		invokeResponse.put("TRTHImportRiskException", trthImportResponse.getRiskFreeAssetEventSetID());
         	System.out.println(invokeResponse.toString());
-        	return invokeResponse.toString();
+        	trthImportResponse.setRiskFreeAssetEventSetID(null);
     	}
     	
         //download & visualization of import data
