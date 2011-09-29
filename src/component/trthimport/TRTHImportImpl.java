@@ -39,7 +39,7 @@ public class TRTHImportImpl implements TRTHImport {
     try {
       stub = new TRTHImportCacheServiceStub(wsURL);
     } catch (AxisFault e) {
-      throw new ComputingServiceException(e);
+      throw new ComputingServiceException(e.getMessage());
     }
 
     response = new TRTHImportResponseModel();
@@ -52,15 +52,32 @@ public class TRTHImportImpl implements TRTHImport {
     param.setUseGMT(request.getUseGMT());
     param.setAddCorporateActions(request.getUseCorporateActions());
 
-    param.setRIC(request.getMarketDataRIC());
-    importData(1);
+    if(request.getMarketDataRIC() == null ||
+        request.getMarketDataRIC().length() == 0) {
+      response.setMarketDataStatus(false);
+      response.setMarketDataEventSetID("Market Data RIC is null");
+    } else {
+      param.setRIC(request.getMarketDataRIC());
+      importData(1);
+    }
 
-    param.setRIC(request.getIndexRIC());
-    importData(2);
+    if(request.getIndexRIC() == null ||
+        request.getIndexRIC().length() == 0) {
+      response.setIndexStatus(false);
+      response.setIndexEventSetID("Index Data RIC is null");
+    } else {
+      param.setRIC(request.getIndexRIC());
+      importData(2);
+    }
 
-    param.setRIC(request.getRiskRIC());
-    importData(3);
-
+    if(request.getRiskRIC() == null ||
+        request.getRiskRIC().length() == 0) {
+      response.setRiskFreeAssetStatus(false);
+      response.setRiskFreeAssetEventSetID("Risk Data RIC is null");
+    } else {
+      param.setRIC(request.getRiskRIC());
+      importData(3);
+    }
     return response;
 
   }
@@ -73,7 +90,7 @@ public class TRTHImportImpl implements TRTHImport {
       res = stub.tRTHImportCache(param);
     } catch (RemoteException e) {
       // TODO Auto-generated catch block
-      throw new ComputingServiceException(e);
+      throw new ComputingServiceException(e.getMessage());
     }
     
     boolean status = true;
