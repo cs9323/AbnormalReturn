@@ -37,7 +37,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		
 		String marketData = request.getRequest().getMarketDataEventSetID();
 		String index = request.getRequest().getIndexEventSetID();
-		String riskFreeAsset = request.getRequest().getIndexEventSetID();
+		String riskFreeAsset = request.getRequest().getRiskFreeAssetEventSetID();
 		
 		ArrayOfString measures = request.getMeasures();
 		ArrayOfString rics = request.getRics();

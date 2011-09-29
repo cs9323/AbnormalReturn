@@ -150,6 +150,8 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for TimeSeriesBuilding
+        if(_Measurement == null || _intervalDuration == null || _intervalUnit == null)
+        	return invokeResponse.toString();
         TimeSeriesModel timeSeriesModel = null;
         TimeSeriesResponseModel timeSeriesResponse = null;
         try{
@@ -174,6 +176,8 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for Merge
+        if(_mergeOption == null)
+        	return invokeResponse.toString();
         MergeModel mergeModel = null;
         MergeResponseModel mergeResponse = null;
         try{
@@ -199,6 +203,8 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for AbnormalReturn
+        if(_daysWindow == null || _modelType == null)
+        	return invokeResponse.toString();
         AbnormalreturnModel abnormalreturnModel = null;
         AbnormalreturnResponseModel abnormalreturnResponse = null;
         try{
