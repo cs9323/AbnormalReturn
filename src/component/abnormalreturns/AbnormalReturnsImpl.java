@@ -47,7 +47,12 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
         }
 
         Abnormalreturn ar = new Abnormalreturn();
-        int dayWin = inputs.getDayWindow();
+        int dayWin = 0; 
+        try{
+        	dayWin = Integer.parseInt(inputs.getDayWindow());
+        }catch(NumberFormatException e){
+        	throw new ComputingServiceException(e.getMessage());
+        }
         if (dayWin < 0)
             dayWin = 30;
         String modelType = inputs.getModelType();

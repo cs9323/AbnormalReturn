@@ -150,7 +150,8 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for TimeSeriesBuilding
-        if(_Measurement == null || _intervalDuration == null || _intervalUnit == null)
+        if(_Measurement == null || _Measurement.length() == 0 || _intervalDuration == null 
+        		|| _intervalDuration.length() == 0|| _intervalUnit == null || _intervalUnit.length() == 0)
         	return invokeResponse.toString();
         TimeSeriesModel timeSeriesModel = null;
         TimeSeriesResponseModel timeSeriesResponse = null;
@@ -176,7 +177,7 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for Merge
-        if(_mergeOption == null)
+        if(_mergeOption == null || _mergeOption.length() == 0)
         	return invokeResponse.toString();
         MergeModel mergeModel = null;
         MergeResponseModel mergeResponse = null;
@@ -203,7 +204,7 @@ public class ComputingServiceImpl implements ComputingService {
         }
         
         // TODO Here insert code for AbnormalReturn
-        if(_daysWindow == null || _modelType == null)
+        if(_daysWindow == null || _daysWindow.length() == 0 || _modelType == null || _modelType.length() == 0)
         	return invokeResponse.toString();
         AbnormalreturnModel abnormalreturnModel = null;
         AbnormalreturnResponseModel abnormalreturnResponse = null;
@@ -302,7 +303,7 @@ public class ComputingServiceImpl implements ComputingService {
         ch.setPassword("");
         ch.setUsername("");
         String modelType = _modelType;
-        int dayWindow = Integer.parseInt(_daysWindow);
+        String dayWindow = _daysWindow;
         return new AbnormalreturnModel(ch, request.getResultEventSetID(),
                 modelType, dayWindow);
     }

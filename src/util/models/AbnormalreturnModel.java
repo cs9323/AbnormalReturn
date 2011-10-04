@@ -9,7 +9,7 @@ public class AbnormalreturnModel implements Serializable{
     private static final long serialVersionUID = 1L;
     public AbnormalreturnModel(){}
        
-       public AbnormalreturnModel(CredentialsHeader ch,String eventID,String modelType,int dayWindow){
+       public AbnormalreturnModel(CredentialsHeader ch, String eventID, String modelType, String dayWindow){
     	   this.ch=ch;
     	   this.EventID=eventID;
     	   this.modelType=modelType;
@@ -18,17 +18,17 @@ public class AbnormalreturnModel implements Serializable{
        
        CredentialsHeader ch;
        public CredentialsHeader getCredentialsHeader(){return ch;}
-       public void setCredentialsHeader(CredentialsHeader value){ch=value;}
+       public void setCredentialsHeader(CredentialsHeader value){ch = value;}
        
        String EventID;
        public String getEventID(){return EventID;}
-       public void setEventID(String value){EventID=value;}
+       public void setEventID(String value){EventID = value;}
        
        String modelType;
        public String getModelType(){return modelType;}
-       public void setModelType(String value){modelType=value;}
+       public void setModelType(String value){modelType = value;}
 
-       int dayWindow;
-       public int getDayWindow(){return dayWindow;}
-       public void setDayWindow(int value){dayWindow=value;}
+       String dayWindow;
+       public String getDayWindow(){return dayWindow;}
+       public void setDayWindow(String value){dayWindow = value;}
 }
