@@ -3,10 +3,11 @@ package component.trthimport;
 import org.osoa.sca.annotations.Remotable;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 
 @Remotable
 public interface TRTHImport {
-    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws ComputingServiceException;
+    public TRTHImportResponseModel ImportMarketData(TRTHImportModel request) throws ComputingServiceException, ServiceDownException;
 }

@@ -11,6 +11,7 @@ import component.download.DowloadEventSetStub.DownloadBinaryFile;
 import component.download.DowloadEventSetStub.DownloadBinaryFileResponse;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.DownloadModel;
 import util.models.DownloadResponseModel;
 
@@ -18,12 +19,12 @@ public class DownloadImpl implements Download {
 
 	@Override
 	public DownloadResponseModel returnResult(DownloadModel request)
-			throws ComputingServiceException {
+			throws ComputingServiceException, ServiceDownException {
 		return generateReturnResult(request);
 		//return generateDummyresult(request);
 	}
 
-	private DownloadResponseModel generateReturnResult(DownloadModel request) throws ComputingServiceException {
+	private DownloadResponseModel generateReturnResult(DownloadModel request) throws ComputingServiceException, ServiceDownException {
 		// TODO Auto-generated method stub
 		String data = request.geteventSetId();
 		
@@ -35,7 +36,8 @@ public class DownloadImpl implements Download {
             stub = new DowloadEventSetStub(wURL);
         } catch (AxisFault e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e.getMessage());
+            //throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("Download Service is Down.");
         }
 		
 		DownloadBinaryFile download_request = new DownloadBinaryFile();
@@ -48,7 +50,8 @@ public class DownloadImpl implements Download {
             resp = stub.downloadBinaryFile(download_request);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e.getMessage());
+            //throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("Download Service is Down.");
         } catch (IOExceptionException e) {
             // TODO Auto-generated catch block
             throw new ComputingServiceException(e.getMessage());

@@ -12,6 +12,7 @@ import component.trthimport.TRTHImportCacheServiceStub.TRTHImportCacheResponse;
 import component.trthimport.TRTHImportCacheServiceStub.TimeRange;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 
@@ -26,20 +27,20 @@ public class TRTHImportImpl implements TRTHImport {
 
   @Override
   public TRTHImportResponseModel ImportMarketData(TRTHImportModel request)
-      throws ComputingServiceException {
+      throws ComputingServiceException, ServiceDownException {
     this.request = request;
     return importMarketDataImpl();
   }
 
   private TRTHImportResponseModel importMarketDataImpl()
-      throws ComputingServiceException {
-
+      throws ComputingServiceException, ServiceDownException {
     System.out.println("Running TRTHImport Component");
 
     try {
       stub = new TRTHImportCacheServiceStub(wsURL);
     } catch (AxisFault e) {
-      throw new ComputingServiceException(e.getMessage());
+      //throw new ComputingServiceException(e.getMessage());
+    	throw new ServiceDownException("TRTHImport Service is Down.");
     }
 
     response = new TRTHImportResponseModel();
@@ -82,7 +83,7 @@ public class TRTHImportImpl implements TRTHImport {
 
   }
 
-  private void importData(int process) throws ComputingServiceException {
+  private void importData(int process) throws ComputingServiceException, ServiceDownException {
 
     TRTHImportCacheResponse res = null;
     try {
@@ -90,7 +91,8 @@ public class TRTHImportImpl implements TRTHImport {
       res = stub.tRTHImportCache(param);
     } catch (RemoteException e) {
       // TODO Auto-generated catch block
-      throw new ComputingServiceException(e.getMessage());
+      //throw new ComputingServiceException(e.getMessage());
+    	throw new ServiceDownException("TRTHImport Service is Down.");
     }
     
     boolean status = true;

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.axis2.AxisFault;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.AbnormalreturnModel;
 import util.models.AbnormalreturnResponseModel;
 import component.abnormalreturns.AbnormalreturnServiceStub.Abnormalreturn;
@@ -14,7 +15,7 @@ import component.abnormalreturns.AbnormalreturnServiceStub.AbnormalreturnRespons
 public class AbnormalReturnsImpl implements AbnormalReturns {
 
     public AbnormalreturnResponseModel calculate(AbnormalreturnModel inputs)
-            throws ComputingServiceException {
+            throws ComputingServiceException, ServiceDownException {
         return doCalculate(inputs);
     	//return dummy(inputs);
     }
@@ -32,7 +33,7 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
     }
 
     private AbnormalreturnResponseModel doCalculate(AbnormalreturnModel inputs)
-            throws ComputingServiceException {
+            throws ComputingServiceException, ServiceDownException {
     	
     	System.out.println("Input EventSetID:" + inputs.getEventID());
     	
@@ -43,7 +44,8 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
                     "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/AbnormalreturnService");
         } catch (AxisFault e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e.getMessage());
+            //throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("AbnormalReturn Service is Down.");
         }
 
         Abnormalreturn ar = new Abnormalreturn();
@@ -67,7 +69,8 @@ public class AbnormalReturnsImpl implements AbnormalReturns {
             response = arsStub.abnormalreturn(ar);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
-            throw new ComputingServiceException(e.getMessage());
+            //throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("AbnormalReturn Service is Down.");
         }
         
         if(response.getStatus().equals("er"))

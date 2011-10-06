@@ -12,6 +12,7 @@ import component.timeseriesbuilding.TimeseriesServiceStub.Timeseries;
 import component.timeseriesbuilding.TimeseriesServiceStub.TimeseriesResponse;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.TRTHImportModel;
 import util.models.TRTHImportResponseModel;
 import util.models.TimeSeriesModel;
@@ -26,13 +27,13 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 	Timeseries Timeseries_request;
 	
 	@Override
-	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
+	public TimeSeriesResponseModel returnStatusMsg(TimeSeriesModel request) throws ComputingServiceException, ServiceDownException{
 		return generateStatusMsg(request);
 		//return dummy(request);
 	}
 	
 	
-    private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws ComputingServiceException{
+    private TimeSeriesResponseModel generateStatusMsg(TimeSeriesModel request) throws ComputingServiceException, ServiceDownException{
 		CredentialsHeader header = request.getCredentialsHeader();
 		
 		String marketData = request.getRequest().getMarketDataEventSetID();
@@ -49,7 +50,8 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		try {
             stub = new TimeseriesServiceStub(wURL);
         } catch (AxisFault e) {
-            throw new ComputingServiceException(e.getMessage());
+            //throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("TimeSeries Service is Down.");
         }
 		Timeseries_request = new Timeseries();
 		
@@ -83,7 +85,7 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		
 	}
 	
-	public String invoke(String EventSetID) throws ComputingServiceException {
+	public String invoke(String EventSetID) throws ComputingServiceException, ServiceDownException {
 		
 		Timeseries_request.setEventSetId(EventSetID);
 		TimeseriesResponse response = null;
@@ -91,7 +93,8 @@ public class TimeSeriesBuildingImpl implements TimeSeriesBuilding {
 		try {
 			response = stub.timeseries(Timeseries_request);
 		} catch (RemoteException e) {
-			throw new ComputingServiceException(e.getMessage());
+			//throw new ComputingServiceException(e.getMessage());
+        	throw new ServiceDownException("TimeSeries Service is Down.");
 		}
 		
 		String statusmsg = response.getMessage();

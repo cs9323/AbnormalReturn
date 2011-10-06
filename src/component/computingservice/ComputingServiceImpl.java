@@ -1,13 +1,19 @@
 package component.computingservice;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import org.apache.axis2.AxisFault;
 import org.json.JSONObject;
 import org.osoa.sca.annotations.Reference;
 import org.python.modules.newmodule;
+import org.python.parser.ast.expr_contextType;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.AbnormalreturnModel;
 import util.models.AbnormalreturnResponseModel;
 import util.models.DownloadModel;
@@ -115,7 +121,12 @@ public class ComputingServiceImpl implements ComputingService {
     		invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-    	}
+    	}catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
     	
     	if(!trthImportResponse.getMarketDataStatus()) {
     		invokeResponse.put("TRTHImportMarketException", trthImportResponse.getMarketDataEventSetID());
@@ -147,7 +158,12 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
         
         // TODO Here insert code for TimeSeriesBuilding
         if(_Measurement == null || _Measurement.length() == 0 || _intervalDuration == null 
@@ -164,7 +180,13 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
+        
         //download & visualization of timeSeriesBuilding data
         try{
         	doDownloadVisualization("TSBIndex", timeSeriesResponse.getIndexEventSetID());
@@ -174,7 +196,12 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
         
         // TODO Here insert code for Merge
         if(_mergeOption == null || _mergeOption.length() == 0)
@@ -190,7 +217,12 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
         //download & visualization of merge data
         try{
 	        if(mergeModel.getRiskFreeAssetEventSetID() == null)
@@ -201,7 +233,12 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
         
         // TODO Here insert code for AbnormalReturn
         if(_daysWindow == null || _daysWindow.length() == 0 || _modelType == null || _modelType.length() == 0)
@@ -217,7 +254,12 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
         //download & visualization of abnormalReturn
         try{
 	       	doDownloadVisualization("ABN", abnormalreturnResponse.getEventSetID());
@@ -225,7 +267,13 @@ public class ComputingServiceImpl implements ComputingService {
         	invokeResponse.put("ComputingServiceException", e.getFaultMessage());
         	System.out.println(invokeResponse.toString());
         	return invokeResponse.toString();
-        }
+        }catch (ServiceDownException e) {
+    		WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ServiceDownException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+		}
+        
         
         //final return result
         System.out.println("Response: " + invokeResponse.toString());
@@ -331,35 +379,35 @@ public class ComputingServiceImpl implements ComputingService {
     }
 
     private TRTHImportResponseModel invokeTRTHImport(TRTHImportModel request)
-            throws ComputingServiceException {
+            throws ComputingServiceException, ServiceDownException {
         return trth.ImportMarketData(request);
     }
 
     private TimeSeriesResponseModel invokeTimeSeriesBuilding(
-            TimeSeriesModel request) throws ComputingServiceException{
+            TimeSeriesModel request) throws ComputingServiceException, ServiceDownException{
         return timeSeriesBuilding.returnStatusMsg(request);
     }
 
-    private MergeResponseModel invokeMerge(MergeModel request) throws ComputingServiceException {
+    private MergeResponseModel invokeMerge(MergeModel request) throws ComputingServiceException, ServiceDownException {
         return merge.MergeData(request);
     }
 
     private AbnormalreturnResponseModel invokeAbnormalReturn(
-            AbnormalreturnModel request) throws ComputingServiceException {
+            AbnormalreturnModel request) throws ComputingServiceException, ServiceDownException {
         return abnormalReturns.calculate(request);
     }
 
     private DownloadResponseModel invokeDownload(DownloadModel request)
-            throws ComputingServiceException {
+            throws ComputingServiceException, ServiceDownException {
         return download.returnResult(request);
     }
     
     private VisualizationResponseModel invokeVisualization(VisualizationModel request)
-            throws ComputingServiceException{
+            throws ComputingServiceException, ServiceDownException{
     	return visualization.VisualizeData(request);
     }
     
-    private void doDownloadVisualization(String namePrefix, String eventSetId) throws ComputingServiceException {
+    private void doDownloadVisualization(String namePrefix, String eventSetId) throws ComputingServiceException, ServiceDownException {
     	String results = "";
     	if(eventSetId != null) {
             DownloadModel DownloadReq = constructDownloadRequest(eventSetId);
@@ -373,5 +421,50 @@ public class ComputingServiceImpl implements ComputingService {
        		}
     	}
     }
-  
+    
+    private void WriteExceptionLog(String ExpMessage) {
+    	int ServiceNO = 0;
+    	if (ExpMessage.contains("TRTHImport"))
+    		ServiceNO = 1;
+    	if (ExpMessage.contains("TimeSeries"))
+    		ServiceNO = 2;
+    	if (ExpMessage.contains("Merge"))
+    		ServiceNO = 3;
+    	if (ExpMessage.contains("AbnormalReturn"))
+    		ServiceNO = 4;
+    	if (ExpMessage.contains("Download"))
+    		ServiceNO = 5;
+    	if (ExpMessage.contains("Visualization"))
+    		ServiceNO = 6;
+    	String fileName = "/home/neil/9323/AbnormalReturnRecovery/ServicesStatus";
+    	ArrayList<String> items = new ArrayList<String>();
+    	try {
+    	    FileReader fr = new FileReader(fileName);
+    	    BufferedReader br = new BufferedReader(fr);
+    	    String line = null;
+    	    int count =0;
+    	    while ((line = br.readLine()) != null) {
+    	    	if (line.trim().length() == 0)
+    	    		continue;
+    	    	 count++;
+    	    	 if (count == ServiceNO) {
+    	    		 int spilt = line.indexOf(" ");
+    	    		 line = line.substring(0, spilt) + " BAD";
+    	    	 }
+    	         items.add(line);
+    	    }
+    	    br.close();
+    	    fr.close();
+    	    FileWriter fw = new FileWriter(fileName, false);
+    	    for (int i = 0; i < items.size(); ++i) {
+    	    	fw.append(items.get(i));
+    	    	if (i != items.size() - 1)
+    	    		fw.append("\n");
+    	    }
+    	    fw.close();
+    	}
+    	catch (Exception e) {
+			System.out.println("Writing ServicesStatus File Error:" + e.toString());
+		}
+    }
 }

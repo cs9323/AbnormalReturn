@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.axis2.AxisFault;
 
 import util.exceptions.ComputingServiceException;
+import util.exceptions.ServiceDownException;
 import util.models.MergeModel;
 import util.models.MergeResponseModel;
 import component.merge.MergeServiceStub.ArrayOfString;
@@ -13,12 +14,12 @@ import component.merge.MergeServiceStub.CredentialsHeader;
 
 public class MergeImpl implements Merge {
 	
-	public MergeResponseModel MergeData(MergeModel request) throws ComputingServiceException {
+	public MergeResponseModel MergeData(MergeModel request) throws ComputingServiceException, ServiceDownException {
 		return doMergeData(request);
 		//return dummyMergeData(request);
 	}
 	
-	private MergeResponseModel doMergeData(MergeModel request) throws ComputingServiceException {
+	private MergeResponseModel doMergeData(MergeModel request) throws ComputingServiceException, ServiceDownException {
 		String wsURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/MergeService";
 		MergeServiceStub stub = null;
 		
@@ -26,7 +27,8 @@ public class MergeImpl implements Merge {
             stub = new MergeServiceStub(wsURL);
             stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
         } catch (AxisFault e1) {
-            throw new ComputingServiceException(e1.getMessage());
+            //throw new ComputingServiceException(e1.getMessage());
+        	throw new ServiceDownException("Merge Service is Down.");
         }
 		
 		String marketDataEventSetID = request.getMarketDataEventSetID();
@@ -58,7 +60,8 @@ public class MergeImpl implements Merge {
 			try{
 				response1 = stub.merge(msg1);
 			}catch(RemoteException e){
-				throw new ComputingServiceException(e.getMessage());
+				//throw new ComputingServiceException(e.getMessage());
+				throw new ServiceDownException("Merge Service is Down.");
 			}
 		}
 		else
@@ -87,7 +90,8 @@ public class MergeImpl implements Merge {
 			try{
 				response2 = stub.merge(msg2);
 			}catch(RemoteException e){
-				throw new ComputingServiceException(e.getMessage());
+				//throw new ComputingServiceException(e.getMessage());
+				throw new ServiceDownException("Merge Service is Down.");
 			}
 		}
 		else{
