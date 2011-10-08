@@ -36,8 +36,6 @@ public class DownloadImpl implements Download {
 		String wURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/DowloadEventSet?wsdl";
 		
 		String path = System.getProperty("java.io.tmpdir");
-		if(path.contains("/temp"))
-			path = path.replace("/temp", "/webapps/ROOT/");
 		
 		DowloadEventSetStub stub = null;
 		try {
@@ -64,24 +62,39 @@ public class DownloadImpl implements Download {
             // TODO Auto-generated catch block
             throw new ComputingServiceException(e.getMessage());
         }
-                
-		File tempResult = (File) resp.get_return();
-		String fileName = tempResult.getName();
-		File result = new File(path + fileName);
-		try {
-			FileUtils.copyFile(tempResult, result);
-		} catch (IOException e) {
-			throw new ComputingServiceException(e.getMessage());
-		}
+        
+        DownloadResponseModel response_model = new DownloadResponseModel();
+        if(path.contains("/temp")) {
+			path = path.replace("/temp", "/webapps/ROOT/");
+			File tempResult = (File) resp.get_return();
+			String fileName = tempResult.getName();
+			File result = new File(path + fileName);
+			try {
+				FileUtils.copyFile(tempResult, result);
+			} catch (IOException e) {
+				throw new ComputingServiceException(e.getMessage());
+			}
+			
+			MessageContext mc = MessageContext.getCurrentMessageContext();
+			HttpServletRequest req = (HttpServletRequest)mc.getProperty("transport.http.servletRequest");
+			String url = req.getRequestURL().toString();
+			url = url.substring(0, url.lastIndexOf('/'));
+			url = url.substring(0, url.lastIndexOf('/'));
+			url = url + "/" + result.getName();
+			response_model.setEventSetId(url);
+        }else {
+        	File result = (File) resp.get_return();
+        	try {
+				FileUtils.copyFile(result, new File("/home/shifengming/tomcat6.0/webapps/ROOT/" + result.getName()));
+			} catch (IOException e) {
+				throw new ComputingServiceException(e.getMessage());
+			}
+			String url = "http://127.0.0.1:8080/";
+			url = url + result.getName();
+			response_model.setEventSetId(url);
+        }
 		
-		MessageContext mc = MessageContext.getCurrentMessageContext();
-		HttpServletRequest req = (HttpServletRequest)mc.getProperty("transport.http.servletRequest");
-		String url = req.getRequestURL().toString();
-		url = url.substring(0, url.lastIndexOf('/'));
-		url = url.substring(0, url.lastIndexOf('/'));
-		url = url + "/" + result.getName();
-		DownloadResponseModel response_model = new DownloadResponseModel();
-		response_model.setEventSetId(url);
+		
 		
 		System.out.println(response_model.getEventSetId());
 		return response_model;
