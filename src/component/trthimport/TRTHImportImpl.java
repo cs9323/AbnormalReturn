@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.apache.axis2.AxisFault;
-import org.codehaus.jettison.json.JSONObject;
 
 import component.trthimport.TRTHImportCacheServiceStub.TRTHImportCache;
 import component.trthimport.TRTHImportCacheServiceStub.DateRange;

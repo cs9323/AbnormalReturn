@@ -2,10 +2,15 @@ package component.download;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.MessageContext;
+import org.apache.commons.io.FileUtils;
 
 import component.download.DowloadEventSetStub.DownloadBinaryFile;
 import component.download.DowloadEventSetStub.DownloadBinaryFileResponse;
@@ -30,8 +35,11 @@ public class DownloadImpl implements Download {
 		
 		String wURL = "http://soc-server2.cse.unsw.edu.au:14080/axis2/services/DowloadEventSet?wsdl";
 		
-		DowloadEventSetStub stub = null;
+		String path = System.getProperty("java.io.tmpdir");
+		if(path.contains("/temp"))
+			path = path.replace("/temp", "/webapps/ROOT/");
 		
+		DowloadEventSetStub stub = null;
 		try {
             stub = new DowloadEventSetStub(wURL);
         } catch (AxisFault e) {
@@ -57,12 +65,25 @@ public class DownloadImpl implements Download {
             throw new ComputingServiceException(e.getMessage());
         }
                 
-		File result = (File) resp.get_return();
+		File tempResult = (File) resp.get_return();
+		String fileName = tempResult.getName();
+		File result = new File(path + fileName);
+		try {
+			FileUtils.copyFile(tempResult, result);
+		} catch (IOException e) {
+			throw new ComputingServiceException(e.getMessage());
+		}
+		
+		MessageContext mc = MessageContext.getCurrentMessageContext();
+		HttpServletRequest req = (HttpServletRequest)mc.getProperty("transport.http.servletRequest");
+		String url = req.getRequestURL().toString();
+		url = url.substring(0, url.lastIndexOf('/'));
+		url = url.substring(0, url.lastIndexOf('/'));
+		url = url + "/" + result.getName();
 		DownloadResponseModel response_model = new DownloadResponseModel();
+		response_model.setEventSetId(url);
 		
-		response_model.setReturnFile(result);
-		
-		System.out.println(response_model.getReturnFile());
+		System.out.println(response_model.getEventSetId());
 		return response_model;
 		
 	}
@@ -88,7 +109,7 @@ public class DownloadImpl implements Download {
 		}
 		
 		DownloadResponseModel resModel = new DownloadResponseModel();
-		resModel.setReturnFile(resFile);
+		resModel.setEventSetId(resFile.getAbsolutePath());
 		
 		return resModel;
 	}

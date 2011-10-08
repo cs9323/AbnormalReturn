@@ -1,22 +1,21 @@
 package util.models;
 
-import java.io.File;
 import java.io.Serializable;
 
 public class DownloadResponseModel implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private File returnFile;
+	private String eventSetId;
 	
 	public DownloadResponseModel() {}
 
-	public void setReturnFile(File returnFile) {
-		this.returnFile = returnFile;
+	public void setEventSetId(String eventSetId) {
+		this.eventSetId = eventSetId;
 	}
 
-	public File getReturnFile() {
-		return returnFile;
+	public String getEventSetId() {
+		return eventSetId;
 	}
 
 }

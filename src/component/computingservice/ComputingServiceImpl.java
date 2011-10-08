@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import org.apache.axis2.AxisFault;
 import org.json.JSONObject;
 import org.osoa.sca.annotations.Reference;
-import org.python.modules.newmodule;
-import org.python.parser.ast.expr_contextType;
 
 import util.exceptions.ComputingServiceException;
 import util.exceptions.ServiceDownException;
@@ -412,7 +410,7 @@ public class ComputingServiceImpl implements ComputingService {
     	if(eventSetId != null) {
             DownloadModel DownloadReq = constructDownloadRequest(eventSetId);
             DownloadResponseModel DownloadRsp = invokeDownload(DownloadReq);
-            invokeResponse.put(namePrefix + "DownloadURL", DownloadRsp.getReturnFile().getAbsolutePath());
+            invokeResponse.put(namePrefix + "DownloadURL", DownloadRsp.getEventSetId());
             
        		if(!namePrefix.contains("TRTH")){
 	            VisualizationModel VisualizeReq = constructVisualizationModel(eventSetId);
