@@ -1,12 +1,26 @@
 package component.computingservice;
 
+import org.apache.axis2.context.MessageContext;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.axis2.AxisFault;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.osoa.sca.annotations.Reference;
 
@@ -272,6 +286,16 @@ public class ComputingServiceImpl implements ComputingService {
         	return invokeResponse.toString();
 		}
         
+        //analyze the abnormal return data
+        try{
+        	String analysisEventSetId = doAbnormalAnalysis(abnormalreturnResponse.getEventSetID());
+        	invokeResponse.put("AnalysisResult", analysisEventSetId);
+        }catch(ComputingServiceException e) {
+        	WriteExceptionLog(e.getFaultMessage());
+    		invokeResponse.put("ComputingServiceException", e.getFaultMessage());
+        	System.out.println(invokeResponse.toString());
+        	return invokeResponse.toString();
+        }
         
         //final return result
         System.out.println("Response: " + invokeResponse.toString());
@@ -465,4 +489,237 @@ public class ComputingServiceImpl implements ComputingService {
 			System.out.println("Writing ServicesStatus File Error:" + e.toString());
 		}
     }
+    
+	public static String doAbnormalAnalysis(String file) throws ComputingServiceException {
+		String eventSetId = null;
+		try {
+			String path = System.getProperty("java.io.tmpdir");
+			ArrayList<ABData> abnList = new ArrayList<ABData>();
+			FileReader fr = new FileReader(path + "/" + file);
+			BufferedReader bfr = new BufferedReader(fr);
+			bfr.readLine();
+			String temp = bfr.readLine();
+			while(temp != null) {
+				ABData data = new ABData();
+				temp = temp.replace(", ", ",");
+				String[] fields = temp.split(",");
+				if(fields != null)
+					data.setSecurity(fields[0]);
+				if(fields.length > 0) {
+					Calendar date = Calendar.getInstance();
+					DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+					Date d = formatter.parse(fields[1]);
+					date.set(d.getYear(), d.getMonth(), d.getDate());
+					data.setDateOfTrade(date);
+				}
+				if(fields.length > 3)
+					data.setClsPrice(Double.parseDouble(fields[3]));
+				if(fields.length > 8) {
+					if(fields[8].equals("Infinity"))
+						data.setVariance(Double.MAX_VALUE);
+					else
+						data.setVariance(Double.parseDouble(fields[8]));
+				}
+				if(fields.length > 9) {
+					double num = Double.parseDouble(fields[9]);
+					if(num == 1)
+						data.setIs_abnormal(true);
+					else
+						data.setIs_abnormal(false);
+				}
+				if(fields.length > 10) 
+					data.setNews_abnormal(fields[10]);
+				abnList.add(data);
+				temp = bfr.readLine();
+			}
+			
+			ABData firstData = abnList.get(0);
+			int curMonth = firstData.getDateOfTrade().get(firstData.getDateOfTrade().MONTH);
+			int curYear = firstData.getDateOfTrade().get(firstData.getDateOfTrade().YEAR);
+			ArrayList<ABData> itemsList = new ArrayList<ABData>();
+			String id = file.substring(4, file.length() - 4);
+			File output = File.createTempFile("analysis-", ".csv");
+			FileWriter fw = new FileWriter(output);
+			fw.append("Security, Month, #Trades, #Abnormal, Max_ClsPrice, Min_ClsPrice, Max_variance, Is Abnormal, Max_variance_news_abnormal\n");
+			for(int i = 0; i < abnList.size(); i++) {
+				ABData data = abnList.get(i);
+				if(curMonth == data.getDateOfTrade().get(data.getDateOfTrade().MONTH)
+						&& curYear == data.getDateOfTrade().get(data.getDateOfTrade().YEAR)) {
+					itemsList.add(data);
+				}
+				else {
+					if(itemsList.size() > 0)
+						AnalyzeList(itemsList, fw);
+					curMonth = data.getDateOfTrade().get(
+							data.getDateOfTrade().MONTH);
+					curYear = data.getDateOfTrade().get(
+							data.getDateOfTrade().YEAR);
+					i--;
+				}
+			}
+			if (itemsList.size() != 0)
+				AnalyzeList(itemsList, fw);
+			fw.close();
+			
+			if(path.contains("/temp")) {
+				path = path.replace("/temp", "/webapps/ROOT/");
+				String fileName = output.getName();
+				File result = new File(path + fileName);
+				try {
+					FileUtils.copyFile(output, result);
+				} catch (IOException e) {
+					throw new ComputingServiceException(e.getMessage());
+				}
+				
+				MessageContext mc = MessageContext.getCurrentMessageContext();
+				HttpServletRequest req = (HttpServletRequest)mc.getProperty("transport.http.servletRequest");
+				String url = req.getRequestURL().toString();
+				url = url.substring(0, url.lastIndexOf('/'));
+				url = url.substring(0, url.lastIndexOf('/'));
+				url = url + "/" + result.getName();
+				eventSetId = url;
+	        }
+			else {
+	        	try {
+					FileUtils.copyFile(output, new File("/home/shifengming/tomcat6.0/webapps/ROOT/" + output.getName()));
+				} catch (IOException e) {
+					throw new ComputingServiceException(e.getMessage());
+				}
+				String url = "http://127.0.0.1:8080/";
+				url = url + output.getName();
+				eventSetId = url;
+	        }
+			
+		} catch (Exception e) {
+			throw new ComputingServiceException(e.getMessage());
+		}
+		
+		System.out.println("AnalysisResult: " + eventSetId);
+		return eventSetId;
+	}
+    
+	public static void AnalyzeList(ArrayList<ABData> itemsList, Writer write) throws IOException {
+		String Security = itemsList.get(0).getSecurity();
+		Calendar month = itemsList.get(0).getDateOfTrade();
+		int numOfTrades = itemsList.size();
+		int numOfAbnormal = 0;
+		double max_ClsPrice = itemsList.get(0).getClsPrice();
+		double min_ClsPrice = itemsList.get(0).getClsPrice();
+		double max_variance = 0;
+		boolean isAbnormal = false;
+		String newsAbnormal = null;
+		int index = 0;
+		
+		for (int i = 0; i < itemsList.size(); ++i) {
+			ABData item = itemsList.get(i);
+			if(max_ClsPrice < item.getClsPrice())
+				max_ClsPrice = item.getClsPrice();
+			if(min_ClsPrice > item.getClsPrice())
+				min_ClsPrice = item.getClsPrice();
+			if(max_variance < item.getVariance()) {
+				max_variance = item.getVariance();
+				index = i;
+			}
+			if(item.isIs_abnormal())
+				numOfAbnormal++;
+		}
+		isAbnormal = itemsList.get(index).isIs_abnormal();
+		newsAbnormal = itemsList.get(index).getNews_abnormal();
+		
+		if(max_variance == Double.MAX_VALUE);
+			
+		String output = Security + ", " +
+					String.valueOf(month.get(month.YEAR) + 1900) + "-" +
+					String.valueOf(month.get(month.MONTH) + 1) + ", " +
+					numOfTrades + ", " +
+					numOfAbnormal + ", " +
+					max_ClsPrice + ", " +
+					min_ClsPrice + ", ";
+		if(max_variance == Double.MAX_VALUE)
+			output = output + "Infinity, ";
+		else if(max_variance != 0)
+			output = output + max_variance + ", ";
+		else
+			output = output + ", ";
+		if(max_variance != 0)
+			if(isAbnormal)
+				output = output + 1 + ", ";
+			else 
+				output = output + 0 + ", ";
+		else 
+			output = output + ", ";
+		if(newsAbnormal == null)
+			output = output + "\n";
+		else
+			output = output + newsAbnormal + "\n";
+		
+		write.append(output);
+		itemsList.clear();
+	}
+	
+	public static class ABData {
+		private String Security;
+		private Calendar DateOfTrade;
+		private double ClsPrice;
+		private double Variance;
+		private boolean Is_abnormal;
+		private String news_abnormal;
+		
+		public ABData() {
+			this.Security = null;
+			this.DateOfTrade = null;
+			this.ClsPrice = 0;
+			this.Variance = 0;
+			this.Is_abnormal = false;
+			this.news_abnormal = null;
+		}
+		
+		public void setSecurity(String security) {
+			Security = security;
+		}
+		
+		public String getSecurity() {
+			return Security;
+		}
+		
+		public void setDateOfTrade(Calendar dateOfTrade) {
+			DateOfTrade = dateOfTrade;
+		}
+		
+		public Calendar getDateOfTrade() {
+			return DateOfTrade;
+		}
+		
+		public void setClsPrice(double clsPrice) {
+			ClsPrice = clsPrice;
+		}
+		
+		public double getClsPrice() {
+			return ClsPrice;
+		}
+		
+		public void setVariance(double variance) {
+			Variance = variance;
+		}
+		
+		public double getVariance() {
+			return Variance;
+		}
+		
+		public void setIs_abnormal(boolean is_abnormal) {
+			Is_abnormal = is_abnormal;
+		}
+		
+		public boolean isIs_abnormal() {
+			return Is_abnormal;
+		}
+		
+		public void setNews_abnormal(String news_abnormal) {
+			this.news_abnormal = news_abnormal;
+		}
+		
+		public String getNews_abnormal() {
+			return news_abnormal;
+		}
+	}
 }
